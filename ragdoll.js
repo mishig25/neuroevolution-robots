@@ -1,28 +1,23 @@
 var pl = planck, Vec2 = pl.Vec2;
 class Ragdoll{
-    constructor(world,size){
+    constructor(world,size,x,y){
         this.world = world;
-        this.createBody(size);
+        this.createBody(size,x,y);
     }
-    createBody(size){
-        const body = this.coreBody(size, 0, 0);
+    createBody(size,x,y){
+        const body = this.coreBody(size, x,y);
         const lower = body.l;
         const upper = body.u;
 
-        const leftLeg = this.limb(size / 3, -size / 1.5, -size / 0.285);
-        const rightLeg = this.limb(size / 3, size / 1.5, -size / 0.285);
-        const leftArm = this.limb(size / 3.5, -size*3.6, size*2.5, true);
-        const rightArm = this.limb(size / 3.5, size * 1.9, size * 2.5, true, false);
+        const leftLeg = this.limb(size / 3, x-size / 1.5, y-size / 0.285);
+        const rightLeg = this.limb(size / 3, x+size / 1.5, y-size / 0.285);
+        const leftArm = this.limb(size / 3.5, x-size*3.6, y+size*2.5, true);
+        const rightArm = this.limb(size / 3.5, x+size * 1.9, y+size * 2.5, true, false);
 
-        const verts = lower.m_fixtureList.m_shape.m_vertices;
-        const jointLeftLeg = pl.Vec2(verts[0].x, verts[0].y);
-        jointLeftLeg.x += size / 4;
-        const jointRightLeg = pl.Vec2(verts[1].x, verts[1].y);
-        jointRightLeg.x -= size / 4;
-        this.createJoint(lower, leftLeg, jointLeftLeg, Math.PI / 2, Math.PI / 8);
-        this.createJoint(lower, rightLeg, jointRightLeg, Math.PI / 8, Math.PI / 2);
-        this.createJoint(upper, leftArm, {x:-size/1.3333,y:size/0.4}, Math.PI / 3);
-        this.createJoint(upper, rightArm, { x: size / 1.3333, y: size / 0.4 }, Math.PI / 3);
+        this.createJoint(lower, leftLeg, pl.Vec2(x-size/1.3333,y-size/2), Math.PI / 2, Math.PI / 8);
+        this.createJoint(lower, rightLeg, pl.Vec2(x+size/1.3333,y-size/2), Math.PI / 8, Math.PI / 2);
+        this.createJoint(upper, leftArm, {x:x-size/1.3333,y:y+size/0.4}, Math.PI / 3);
+        this.createJoint(upper, rightArm, { x: x+size / 1.3333, y: y+size / 0.4 }, Math.PI / 3);
     }
     coreBody(size, x, y) {
         const w = size, h = size;
