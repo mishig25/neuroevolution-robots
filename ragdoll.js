@@ -7,14 +7,14 @@ class Ragdoll{
     }
     createBody(size,x,y){
         this.coreBody(size, x, y);
-        const leftLeg = this.limb(size / 3, x-size / 1.5, y-size / 0.285);
-        const rightLeg = this.limb(size / 3, x+size / 1.5, y-size / 0.285);
-        const leftArm = this.limb(size / 3.5, x-size*3.6, y+size*2.5, true);
-        const rightArm = this.limb(size / 3.5, x+size * 1.9, y+size * 2.5, true, false);
-        this.createJoint(this.bodyParts.lower, leftLeg, pl.Vec2(x-size/1.3333,y-size/2), Math.PI / 2, Math.PI / 8);
-        this.createJoint(this.bodyParts.lower, rightLeg, pl.Vec2(x+size/1.3333,y-size/2), Math.PI / 8, Math.PI / 2);
-        this.createJoint(this.bodyParts.upper, leftArm, {x:x-size/1.3333,y:y+size/0.4}, Math.PI / 3);
-        this.createJoint(this.bodyParts.upper, rightArm, { x: x+size / 1.3333, y: y+size / 0.4 }, Math.PI / 3);
+        this.limb('leftLeg',size / 3, x-size / 1.5, y-size / 0.285);
+        this.limb('rightLeg',size / 3, x+size / 1.5, y-size / 0.285);
+        this.limb('leftArm',size / 3.5, x-size*3.6, y+size*2.5, true);
+        this.limb('rightArm',size / 3.5, x+size * 1.9, y+size * 2.5, true, false);
+        this.createJoint(this.bodyParts.lower, this.bodyParts.leftLegUp, pl.Vec2(x-size/1.3333,y-size/2), Math.PI / 2, Math.PI / 8);
+        this.createJoint(this.bodyParts.lower, this.bodyParts.rightLegUp, pl.Vec2(x+size/1.3333,y-size/2), Math.PI / 8, Math.PI / 2);
+        this.createJoint(this.bodyParts.upper, this.bodyParts.leftArmUp, {x:x-size/1.3333,y:y+size/0.4}, Math.PI / 3);
+        this.createJoint(this.bodyParts.upper, this.bodyParts.rightArmUp, { x: x+size / 1.3333, y: y+size / 0.4 }, Math.PI / 3);
     }
     rot(){
         // this.bodyParts.lower.applyAngularImpulse(-1);
@@ -31,7 +31,7 @@ class Ragdoll{
         this.createJoint(this.bodyParts.upper, this.bodyParts.lower, { x: x, y: y + h / 2 }, Math.PI / 8);
         this.createJoint(this.bodyParts.upper, this.bodyParts.head, { x: x, y: y + h * 3 }, Math.PI / 6);
     }
-    limb(size, x, y, rotate=false, left=true) {
+    limb(name,size, x, y, rotate=false, left=true) {
         var w = size, h = 3 * size;
         if (rotate) w = 3 * size, h = size;
         const boxshp = pl.Box(w, h);
@@ -39,12 +39,20 @@ class Ragdoll{
             const upper = this.body_fixture(x + w * 2, y, boxshp);
             const lower = this.body_fixture(x, y, boxshp);
             this.createJoint(upper, lower, { x: x + w, y: y }, Math.PI / 2);
-            if (left) return upper;
+            if (left){
+                this.bodyParts[name+'Up'] = upper;
+                this.bodyParts[name + 'Low'] = lower;
+                return upper;
+            }
+            this.bodyParts[name + 'Up'] = lower;
+            this.bodyParts[name + 'Low'] = upper;
             return lower;
         }
         const lower = this.body_fixture(x, y, boxshp);
         const upper = this.body_fixture(x, y + h * 2, boxshp);
         this.createJoint(upper, lower, { x: x, y: y + h }, Math.PI / 2);
+        this.bodyParts[name + 'Up'] = upper;
+        this.bodyParts[name + 'Low'] = lower;
         return upper;
     }
     body_fixture(x, y, shp, density = 1.0) {
