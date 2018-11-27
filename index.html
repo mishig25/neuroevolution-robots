@@ -1,0 +1,102 @@
+<html>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/planck-js@0.2/dist/planck-with-testbed.js"></script>
+    <script src="./ragdoll.js"></script>
+    <script>
+        planck.testbed('Pinball', function (testbed) {
+            var pl = planck, Vec2 = pl.Vec2;
+            var world = new pl.World(Vec2(0, 0));
+
+            // world.createBody().createFixture(pl.Edge(Vec2(-40.0, -10.0), Vec2(40.0, -10.0)));
+
+
+            function body_fixture(x, y, shp, density=1.0) {
+                var body_part = world.createDynamicBody(Vec2(x, y));
+                body_part.createFixture(shp, density);
+                return body_part;
+            }
+            
+            function limb(size,x,y){
+                var w = size, h=3*size;
+                var boxshp = pl.Box(w,h);
+
+                var lower = body_fixture(x, y, boxshp);
+                var upper = body_fixture(x, y+h*2, boxshp);
+                
+                const angle = Math.PI / 2;
+                const limits = {
+                    lowerAngle: -angle,
+                    upperAngle: angle,
+                    enableLimit: true,
+                };
+                var jointPosition = { x: x, y: y + h };
+                var joint = world.createJoint(pl.RevoluteJoint(limits, upper, lower, jointPosition));
+                return upper;
+            }
+            // limb(1,0,0);
+
+            function coreBody(size, x, y) {
+                var w = size, h = size;
+                var boxshpUp = pl.Box(w, h);
+                var boxshpLow = pl.Box(w, h/2);
+                var headshp = pl.Circle(w/1.5);
+
+                var lower = body_fixture(x, y, boxshpLow);
+                var head = body_fixture(x, y + h * 3.4, headshp);
+                var upper = body_fixture(x, y + h * 1.5, boxshpUp);
+
+                var jointPosition = { x: x, y: y + h/2 };
+                const coreAngle = Math.PI / 8;
+                const coreLimits = {
+                    lowerAngle: -coreAngle,
+                    upperAngle: coreAngle,
+                    enableLimit: true,
+                };
+                var jointLowerUpper = world.createJoint(pl.RevoluteJoint(coreLimits, upper, lower, jointPosition));
+                const neckAngle = Math.PI / 6;
+                const neckLimits = {
+                    lowerAngle: -neckAngle,
+                    upperAngle: neckAngle,
+                    enableLimit: true,
+                };
+                var jointHeadUpper = world.createJoint(pl.RevoluteJoint(neckLimits, upper, head, {x:x,y:y+h*3}));
+                return lower;
+            }
+
+            function createRagdoll(size){
+                var lower = coreBody(size, 0, 0);
+                var leftLeg = limb(size/3, -size / 1.5, -size/0.285);
+                var rightLeg = limb(size / 3, size / 1.5, -size / 0.285);
+
+                // const limits = {
+                //     lowerAngle: -angle,
+                //     upperAngle: angle,
+                //     enableLimit: true,
+                // };
+                
+                var verts = lower.m_fixtureList.m_shape.m_vertices;
+                var jointPosition = pl.Vec2(verts[0].x, verts[0].y);
+                jointPosition.x += size/4;
+                var jointPosition2 = pl.Vec2(verts[1].x, verts[1].y);
+                jointPosition2.x -= size / 4;
+
+                var joint = world.createJoint(pl.RevoluteJoint({}, lower, leftLeg, jointPosition));
+                var jointA = world.createJoint(pl.RevoluteJoint({}, lower, rightLeg, jointPosition2));
+            };
+            // createRagdoll(2);
+            
+            var r = new Ragdoll(world,2);
+
+            testbed.step = function () {
+                // box1.applyAngularImpulse(-100);
+                // console.log(mouse.getPosition())
+            }
+
+
+            return world;
+        });
+    </script>
+</body>
+
+</html>
