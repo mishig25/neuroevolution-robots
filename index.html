@@ -11,9 +11,10 @@
             // world.createBody().createFixture(pl.Edge(Vec2(-40.0, -10.0), Vec2(40.0, -10.0)));
 
             
-            var r = new Ragdoll(world,1,0,0);
+            const rdoll = new Ragdoll(world,1,0,0);
 
             testbed.step = function () {
+                rdoll.rot()
                 // box1.applyAngularImpulse(-100);
                 // console.log(mouse.getPosition())
             }
