@@ -3,6 +3,7 @@ class Ragdoll{
     constructor(world,size,x,y){
         this.world = world;
         this.bodyParts = {};
+        this.joints = {};
         this.createBody(size,x,y);
     }
     createBody(size,x,y){
@@ -11,13 +12,17 @@ class Ragdoll{
         this.limb('rightLeg',size / 3, x+size / 1.5, y-size / 0.285);
         this.limb('leftArm',size / 3.5, x-size*3.6, y+size*2.5, true);
         this.limb('rightArm',size / 3.5, x+size * 1.9, y+size * 2.5, true, false);
-        this.createJoint(this.bodyParts.lower, this.bodyParts.leftLegUp, pl.Vec2(x-size/1.3333,y-size/2), Math.PI / 2, Math.PI / 8);
-        this.createJoint(this.bodyParts.lower, this.bodyParts.rightLegUp, pl.Vec2(x+size/1.3333,y-size/2), Math.PI / 8, Math.PI / 2);
-        this.createJoint(this.bodyParts.upper, this.bodyParts.leftArmUp, {x:x-size/1.3333,y:y+size/0.4}, Math.PI / 3);
-        this.createJoint(this.bodyParts.upper, this.bodyParts.rightArmUp, { x: x+size / 1.3333, y: y+size / 0.4 }, Math.PI / 3);
+        this.createJoint('leftLegUp', this.bodyParts.lower, this.bodyParts.leftLegUp, pl.Vec2(x-size/1.3333,y-size/2), Math.PI / 2, Math.PI / 8);
+        this.createJoint('rightLegUp', this.bodyParts.lower, this.bodyParts.rightLegUp, pl.Vec2(x+size/1.3333,y-size/2), Math.PI / 8, Math.PI / 2);
+        this.createJoint('leftArmUp', this.bodyParts.upper, this.bodyParts.leftArmUp, {x:x-size/1.3333,y:y+size/0.4}, Math.PI / 3);
+        this.createJoint('rightArmUp', this.bodyParts.upper, this.bodyParts.rightArmUp, { x: x+size / 1.3333, y: y+size / 0.4 }, Math.PI / 3);
     }
     rot(){
         // this.bodyParts.lower.applyAngularImpulse(-1);
+        // const l = this.bodyParts.leftLegLow
+        // console.log(l.m_angularVelocity);
+        // const l = this.joints.rightArmLow;
+        // console.log(l.getLowerLimit(),l.getJointAngle(),l.getUpperLimit());
     }
     coreBody(size, x, y) {
         const w = size, h = size;
@@ -28,17 +33,18 @@ class Ragdoll{
         this.bodyParts.lower = this.body_fixture(x, y, boxshpLow);
         this.bodyParts.head = this.body_fixture(x, y + h * 3.4, headshp);
         this.bodyParts.upper = this.body_fixture(x, y + h * 1.5, boxshpUp);
-        this.createJoint(this.bodyParts.upper, this.bodyParts.lower, { x: x, y: y + h / 2 }, Math.PI / 8);
-        this.createJoint(this.bodyParts.upper, this.bodyParts.head, { x: x, y: y + h * 3 }, Math.PI / 6);
+        this.createJoint('spine', this.bodyParts.upper, this.bodyParts.lower, { x: x, y: y + h / 2 }, Math.PI / 8);
+        this.createJoint('neck', this.bodyParts.upper, this.bodyParts.head, { x: x, y: y + h * 3 }, Math.PI / 6);
     }
     limb(name,size, x, y, rotate=false, left=true) {
         var w = size, h = 3 * size;
         if (rotate) w = 3 * size, h = size;
         const boxshp = pl.Box(w, h);
+        const jointName = name + 'Low';
         if(rotate){
             const upper = this.body_fixture(x + w * 2, y, boxshp);
             const lower = this.body_fixture(x, y, boxshp);
-            this.createJoint(upper, lower, { x: x + w, y: y }, Math.PI / 2);
+            this.createJoint(jointName, upper, lower, { x: x + w, y: y }, Math.PI / 2);
             if (left){
                 this.bodyParts[name+'Up'] = upper;
                 this.bodyParts[name + 'Low'] = lower;
@@ -50,7 +56,7 @@ class Ragdoll{
         }
         const lower = this.body_fixture(x, y, boxshp);
         const upper = this.body_fixture(x, y + h * 2, boxshp);
-        this.createJoint(upper, lower, { x: x, y: y + h }, Math.PI / 2);
+        this.createJoint(jointName, upper, lower, { x: x, y: y + h }, Math.PI / 2);
         this.bodyParts[name + 'Up'] = upper;
         this.bodyParts[name + 'Low'] = lower;
         return upper;
@@ -60,12 +66,13 @@ class Ragdoll{
         body_part.createFixture(shp, density);
         return body_part;
     }
-    createJoint(bodyA, bodyB, anchor, lowerAngle, upperAngle = lowerAngle){
+    createJoint(name, bodyA, bodyB, anchor, lowerAngle, upperAngle = lowerAngle){
         const limits = {
             lowerAngle: -lowerAngle,
             upperAngle: upperAngle,
             enableLimit: true
         }
-        this.world.createJoint(pl.RevoluteJoint(limits, bodyA, bodyB, anchor));
+        const joint = this.world.createJoint(pl.RevoluteJoint(limits, bodyA, bodyB, anchor));
+        this.joints[name] = joint;
     }
 }
