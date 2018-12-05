@@ -8,7 +8,7 @@ class Ragdoll{
         this.createBody(size,x,y);
         this.jointsKeys = Object.keys(this.joints);
         this.bodyPartsKeys = Object.keys(this.bodyParts);
-        this.brain = new NeuralNetwork(this.jointsKeys.length, 30, this.bodyPartsKeys.length);
+        this.brain = new NeuralNetwork(this.jointsKeys.length+1, 30, this.bodyPartsKeys.length);
         this.init = true;
     }
     createBody(size,x,y){
@@ -23,12 +23,9 @@ class Ragdoll{
         this.createJoint('rightArmUp', this.bodyParts.upper, this.bodyParts.rightArmUp, { x: x+size / 1.3333, y: y+size / 0.4 }, Math.PI / 3);
     }
     rot(){
-        // this.createBrainInput();
-        // this.bodyParts.lower.applyAngularImpulse(-1);
-        // const l = this.bodyParts.leftLegLow
-        // console.log(l.m_angularVelocity);
-        // const l = this.joints.rightArmLow;
-        // console.log(l.getLowerLimit(),l.getJointAngle(),l.getUpperLimit());
+    //     const hd = this.bodyParts.head.c_position.c.y;
+    //    const x = hd.c_position.c.x;
+    //    const y = hd.c_position.c.y;
     }
     coreBody(size, x, y) {
         const w = size, h = size;
@@ -92,6 +89,10 @@ class Ragdoll{
             const value = this.mapRange(jt.getJointAngle(), jt.getLowerLimit(), jt.getUpperLimit());
             input.push(value);
         });
+        // head vertical position
+        const vtcl = this.world.vtcl;
+        const head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
+        input.push(head_y);
         return input;
     }
     think(){
