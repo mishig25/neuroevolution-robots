@@ -1,10 +1,15 @@
 const pl = planck, Vec2 = pl.Vec2;
 class Ragdoll{
     constructor(world,size,x,y){
+        this.init = false;
         this.world = world;
         this.bodyParts = {};
         this.joints = {};
         this.createBody(size,x,y);
+        this.jointsKeys = Object.keys(this.joints);
+        this.bodyPartsKeys = Object.keys(this.bodyParts);
+        this.brain = new NeuralNetwork(this.jointsKeys.length, 30, this.bodyPartsKeys.length);
+        this.init = true;
     }
     createBody(size,x,y){
         this.coreBody(size, x, y);
@@ -18,6 +23,7 @@ class Ragdoll{
         this.createJoint('rightArmUp', this.bodyParts.upper, this.bodyParts.rightArmUp, { x: x+size / 1.3333, y: y+size / 0.4 }, Math.PI / 3);
     }
     rot(){
+        // this.createBrainInput();
         // this.bodyParts.lower.applyAngularImpulse(-1);
         // const l = this.bodyParts.leftLegLow
         // console.log(l.m_angularVelocity);
@@ -74,5 +80,32 @@ class Ragdoll{
         }
         const joint = this.world.createJoint(pl.RevoluteJoint(limits, bodyA, bodyB, anchor));
         this.joints[name] = joint;
+    }
+    mapRange(num, in_min, in_max, out_min=0.0, out_max=1.0){
+        return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
+    createBrainInput(){
+        let input = [];
+        this.jointsKeys.forEach((jointKey) => {
+            const jt = this.joints[jointKey];
+            const value = this.mapRange(jt.getJointAngle(), jt.getLowerLimit(), jt.getUpperLimit());
+            input.push(value);
+        });
+        return input;
+    }
+    think(){
+        let input = this.createBrainInput();
+        let result = this.brain.predict(input);
+        for (let i = 0; i < result.length; i++) {
+            let impulse = -2;
+            if (result[i] > .5) impulse *= -1;
+            const bodyPart = this.bodyPartsKeys[i];
+            this.bodyParts[bodyPart].applyAngularImpulse(impulse);
+        }
+    }
+    start() {
+        setInterval(() => {
+            this.think()
+        }, 100)
     }
 }

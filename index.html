@@ -2,6 +2,8 @@
 
 <body>
     <script src="https://cdn.jsdelivr.net/npm/planck-js@0.2/dist/planck-with-testbed.js"></script>
+    <!-- Libraries -->
+    <script src="lib/tf.js"></script>
     <!-- NeuroEvolution -->
     <script src="./nn.js"></script>
     <!-- <script src="./ga.js"></script> -->
@@ -9,15 +11,15 @@
     <script>
         planck.testbed('Pinball', function (testbed) {
             var pl = planck, Vec2 = pl.Vec2;
-            var world = new pl.World(Vec2(0, 0));
+            var world = new pl.World(Vec2(0, -10));
 
-            // world.createBody().createFixture(pl.Edge(Vec2(-40.0, -10.0), Vec2(40.0, -10.0)));
+            world.createBody().createFixture(pl.Edge(Vec2(-40.0, -10.0), Vec2(40.0, -10.0)));
 
             
             const rdoll = new Ragdoll(world,1,0,0);
-
+            rdoll.start();
             testbed.step = function () {
-                rdoll.rot()
+                // rdoll.rot()
                 // box1.applyAngularImpulse(-100);
                 // console.log(mouse.getPosition())
             }
