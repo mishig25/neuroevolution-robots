@@ -70,6 +70,7 @@ class Ragdoll{
     body_fixture(x, y, shp, density = 1.0) {
         const body_part = this.world.createDynamicBody(Vec2(x, y));
         body_part.createFixture(shp, density);
+        body_part.m_fixtureList.m_filterGroupIndex = -1;
         return body_part;
     }
     createJoint(name, bodyA, bodyB, anchor, lowerAngle, upperAngle = lowerAngle){
@@ -97,7 +98,7 @@ class Ragdoll{
         let input = this.createBrainInput();
         let result = this.brain.predict(input);
         for (let i = 0; i < result.length; i++) {
-            let impulse = -2;
+            let impulse = -4;
             if (result[i] > .5) impulse *= -1;
             const bodyPart = this.bodyPartsKeys[i];
             this.bodyParts[bodyPart].applyAngularImpulse(impulse);
