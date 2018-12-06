@@ -6,6 +6,7 @@
     <script src="lib/tf.js"></script>
     <!-- NeuroEvolution -->
     <script src="./nn.js"></script>
+    <script src="./ga.js"></script>
     <!-- <script src="./ga.js"></script> -->
     <script src="./ragdoll.js"></script>
     <script>
@@ -23,15 +24,21 @@
             world.createBody().createFixture(pl.Edge(pt1, pt3));
             world.createBody().createFixture(pl.Edge(pt2, pt4));
             world.vtcl = {min: pt1.y, max: pt3.y };
-            
-            const rdoll = new Ragdoll(world,sceneSize,0,0);
-            rdoll.start();
-            rdoll.rot();
+            world.hztl = { min: pt1.x+sceneSize*5, max: pt2.x-sceneSize*5 };
+
+            let generation = new Generation(world, 10);
+            generation.initialize(Ragdoll, sceneSize);
+
+            // const ragdollInitY = (world.vtcl.max + world.vtcl.min)/2;
+
+            // const rdoll = new Ragdoll(world,sceneSize,0, ragdollInitY);
+            // rdoll.start();
+            // rdoll.rot();
             // const rdoll2 = new Ragdoll(world, sceneSize, 5, 0);
             // rdoll2.start();
 
             testbed.step = function () {
-                rdoll.rot()
+                // rdoll.rot()
                 // box1.applyAngularImpulse(-100);
                 // console.log(mouse.getPosition())
             }
