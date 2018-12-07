@@ -4,17 +4,19 @@
     <script src="https://cdn.jsdelivr.net/npm/planck-js@0.2/dist/planck-with-testbed.js"></script>
     <!-- Libraries -->
     <script src="lib/tf.js"></script>
+    <script src="./p5.js"></script>
     <!-- NeuroEvolution -->
     <script src="./nn.js"></script>
     <script src="./ga.js"></script>
     <!-- <script src="./ga.js"></script> -->
-    <script src="./ragdoll.js"></script>
+    <script src="./robot.js"></script>
     <script>
         planck.testbed('Pinball', function (testbed) {
             var pl = planck, Vec2 = pl.Vec2;
             var world = new pl.World(Vec2(0, -10));
             
             const sceneSize = 1;
+            const generationPeriod = 25;
 
             const pt1 = Vec2(-40.0, -15.0);
             const pt2 = Vec2(40.0, -15.0);
@@ -25,17 +27,18 @@
             world.createBody().createFixture(pl.Edge(pt2, pt4));
             world.vtcl = {min: pt1.y, max: pt3.y };
             world.hztl = { min: pt1.x+sceneSize*5, max: pt2.x-sceneSize*5 };
-
-            let generation = new Generation(world, 10);
-            generation.initialize(Ragdoll, sceneSize);
-
-            // const ragdollInitY = (world.vtcl.max + world.vtcl.min)/2;
-
-            // const rdoll = new Ragdoll(world,sceneSize,0, ragdollInitY);
-            // rdoll.start();
-            // rdoll.rot();
-            // const rdoll2 = new Ragdoll(world, sceneSize, 5, 0);
-            // rdoll2.start();
+            
+        
+            let generation = new Generation(world, 20);
+            generation.initialize(Robot, sceneSize);
+            generation.test();
+            
+            // Restart Generation after 5 seconds
+            setInterval(() => {
+                generation.evolve();
+                // console.log(generation.avg_score);
+                // settled = false;
+            }, generationPeriod * 20);
 
             testbed.step = function () {
                 // rdoll.rot()
