@@ -96,8 +96,10 @@ class Generation {
             // let parentA = this.species[score_x[0][0]].clone();
             // let parentB = this.species[score_x[1][0]].clone();
 
-            let parentA = this.species[parentA_id].clone();
-            let parentB = this.species[parentB_id].clone();
+            const hztl = this.world.hztl;
+            const pos_x = Math.round(Math.random() * (hztl.max - hztl.min) + hztl.min);
+            let parentA = this.species[parentA_id].clone(pos_x);
+            let parentB = this.species[parentB_id].clone(pos_x);
 
             let child = parentA.crossover(parentB);
             child.mutate();

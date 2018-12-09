@@ -118,21 +118,20 @@ class Robot{
             this.think();
         }, 100)
     };
-    clone() {
-        let new_robot = new Robot(this.world, this.size, this.x, this.y, this.id);
-        new_robot.brain.dispose();
-        new_robot.brain = this.brain.clone();
-        return new_robot;
-    };
-    kill(){
+    kill() {
         // remove from world
-        // this.world.destroyBody();
         Object.values(this.bodyParts).forEach((bodyPart) => {
             this.world.destroyBody(bodyPart);
         });
         Object.values(this.joints).forEach((jointsPart) => {
             this.world.destroyBody(jointsPart);
         });
+    };
+    clone(x = this.x, y = this.y) {
+        let new_robot = new Robot(this.world, this.size, x, y, this.id);
+        new_robot.brain.dispose();
+        new_robot.brain = this.brain.clone();
+        return new_robot;
     };
     mutate() {
         const self = this;
