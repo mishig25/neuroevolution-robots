@@ -96,16 +96,18 @@ class Generation {
             // let parentA = this.species[score_x[0][0]].clone();
             // let parentB = this.species[score_x[1][0]].clone();
 
-            const hztl = this.world.hztl;
-            const pos_x = Math.round(Math.random() * (hztl.max - hztl.min) + hztl.min);
-            let parentA = this.species[parentA_id].clone(pos_x);
-            let parentB = this.species[parentB_id].clone(pos_x);
+            // let parentA = this.species[parentA_id].clone();
+            // let parentB = this.species[parentB_id].clone();
 
-            let child = parentA.crossover(parentB);
+            // let child = parentA.crossover(parentB);
+            let parentA = this.species[parentA_id];
+            let parentB = this.species[parentB_id];
+            let child = Robot.crossoverUpdated(this.world, parentA, parentB);
             child.mutate();
             child.id = i;
             child.parents = [{ id: parentA.id, score: this.species[parentA.id].score }, { id: parentB.id, score: this.species[parentB.id].score }];
             new_generation.push(child);
+            child.start();
         }
 
         // Kill Current Generation.

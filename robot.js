@@ -114,7 +114,7 @@ class Robot{
         }
     };
     start() {
-        setInterval(() => {
+        this.interval =setInterval(() => {
             this.think();
         }, 100)
     };
@@ -126,9 +126,14 @@ class Robot{
         Object.values(this.joints).forEach((jointsPart) => {
             this.world.destroyBody(jointsPart);
         });
+        clearInterval(this.interval);
     };
-    clone(x = this.x, y = this.y) {
-        let new_robot = new Robot(this.world, this.size, x, y, this.id);
+    offspring(parentA, parentB){
+        const parentABrain = parentA.brain.clone();
+        const parentBBrain = parentB.brain.clone();
+    }
+    clone() {
+        let new_robot = new Robot(this.world, this.size, this.x, this.y, this.id);
         new_robot.brain.dispose();
         new_robot.brain = this.brain.clone();
         return new_robot;
@@ -169,6 +174,37 @@ class Robot{
         let child = this.clone();
         let input_shape = this.brain.input_weights.shape;
         let output_shape = this.brain.output_weights.shape;
+
+        child.brain.dispose();
+
+        child.brain.input_weights = tf.tensor(child_in_dna, input_shape);
+        child.brain.output_weights = tf.tensor(child_out_dna, output_shape);
+
+        return child;
+    };
+    static crossoverUpdated(world, parentA, parentB) {
+        const parentABrain = parentA.brain.clone();
+        const parentBBrain = parentB.brain.clone();
+
+        let parentA_in_dna = parentABrain.input_weights.dataSync();
+        let parentA_out_dna = parentABrain.output_weights.dataSync();
+        let parentB_in_dna = parentBBrain.input_weights.dataSync();
+        let parentB_out_dna = parentBBrain.output_weights.dataSync();
+
+        let mid = parentA.score / parentB.score;
+
+        //let mid = Math.floor(Math.random() * parentA_in_dna.length);
+        let child_in_dna = [...parentA_in_dna.slice(0, mid), ...parentB_in_dna.slice(mid, parentB_in_dna.length)];
+        let child_out_dna = [...parentA_out_dna.slice(0, mid), ...parentB_out_dna.slice(mid, parentB_out_dna.length)];
+
+        // create new child here
+        // TODO: scense size
+        const y = (world.vtcl.max + world.vtcl.min) / 2;
+        const hztl = world.hztl;
+        const x = Math.round(Math.random() * (hztl.max - hztl.min) + hztl.min);
+        let child = new Robot(world, 1, x, y, 0);
+        let input_shape = parentABrain.input_weights.shape;
+        let output_shape = parentABrain.output_weights.shape;
 
         child.brain.dispose();
 

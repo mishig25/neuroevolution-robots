@@ -33,18 +33,18 @@
             generation.initialize(Robot, sceneSize);
             generation.test();
             
-            setTimeout(() => { 
-                generation.evolve();
-            }, 2000);
+            // setTimeout(() => { 
+            //     generation.evolve();
+            // }, 2000);
 
 
             // Restart Generation after 5 seconds
-            // setInterval(() => {
-            //     // generation.evolve();
-            //     // console.log(generation.avg_score);
-            //     // settled = false;
-            //     console.log('Evolve called')
-            // }, generationPeriod * 500);
+            setInterval(() => {
+                generation.evolve();
+                // console.log(generation.avg_score);
+                // settled = false;
+                // console.log('Evolve called')
+            }, 5000);
 
             testbed.step = function () {
                 // rdoll.rot()
