@@ -103,7 +103,7 @@ class Generation {
             let parentA = this.species[parentA_id];
             let parentB = this.species[parentB_id];
             let child = Robot.crossoverUpdated(this.world, parentA, parentB);
-            child.mutate();
+            child.mutate(0.05);
             child.id = i;
             child.parents = [{ id: parentA.id, score: this.species[parentA.id].score }, { id: parentB.id, score: this.species[parentB.id].score }];
             new_generation.push(child);

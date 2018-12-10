@@ -15,6 +15,9 @@
             var pl = planck, Vec2 = pl.Vec2;
             var world = new pl.World(Vec2(0, -10));
             
+            // testbed.hz = 1;
+            // testbed.speed = 1;
+
             const sceneSize = 1;
             const generationPeriod = 25;
 
@@ -32,18 +35,12 @@
             let generation = new Generation(world, 20);
             generation.initialize(Robot, sceneSize);
             generation.test();
-            
-            // setTimeout(() => { 
-            //     generation.evolve();
-            // }, 2000);
-
 
             // Restart Generation after 5 seconds
             setInterval(() => {
                 generation.evolve();
                 // console.log(generation.avg_score);
                 // settled = false;
-                // console.log('Evolve called')
             }, 5000);
 
             testbed.step = function () {

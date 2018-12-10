@@ -29,11 +29,11 @@ class Robot{
         this.createJoint('leftArmUp', this.bodyParts.upper, this.bodyParts.leftArmUp, {x:x-size/1.3333,y:y+size/0.4}, Math.PI / 3);
         this.createJoint('rightArmUp', this.bodyParts.upper, this.bodyParts.rightArmUp, { x: x+size / 1.3333, y: y+size / 0.4 }, Math.PI / 3);
     };
-    update(){
+    updateScore(){
         // should be called every frame
         const vtcl = this.world.vtcl;
         const head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
-        this.score = head_y * 100;
+        this.score += head_y;
     };
     coreBody(size, x, y) {
         const w = size, h = size;
@@ -107,41 +107,49 @@ class Robot{
         let input = this.createBrainInput();
         let result = this.brain.predict(input);
         for (let i = 0; i < result.length; i++) {
-            let impulse = -4;
-            if (result[i] > .5) impulse *= -1;
+            let impulse = -2;
+            if (result[i] > .5){
+                impulse *= -1;
+            };
             const bodyPart = this.bodyPartsKeys[i];
             this.bodyParts[bodyPart].applyAngularImpulse(impulse);
         }
     };
     start() {
-        this.interval =setInterval(() => {
+        this.interval = setInterval(() => {
             this.think();
-        }, 100)
+            // this.updateScore();
+        }, 20);
     };
     kill() {
         // remove from world
+        Object.values(this.joints).forEach((jointsPart) => {
+            this.world.destroyJoint(jointsPart);
+        });
         Object.values(this.bodyParts).forEach((bodyPart) => {
             this.world.destroyBody(bodyPart);
         });
-        Object.values(this.joints).forEach((jointsPart) => {
-            this.world.destroyBody(jointsPart);
-        });
+        this.score = null;
+        this.brain.dispose();
+        this.brain = null;
         clearInterval(this.interval);
+        this.parents = null;
+        this.bodyParts = null;
+        this.bodyPartsKeys = null;
+        this.joints = null;
+        this.jointsKeys = null;
+        // this = null;
     };
-    offspring(parentA, parentB){
-        const parentABrain = parentA.brain.clone();
-        const parentBBrain = parentB.brain.clone();
-    }
     clone() {
         let new_robot = new Robot(this.world, this.size, this.x, this.y, this.id);
         new_robot.brain.dispose();
         new_robot.brain = this.brain.clone();
         return new_robot;
     };
-    mutate() {
+    mutate(rate = 0.05) {
         const self = this;
         function fn(x) {
-            if (self.random(1) < 0.05) {
+            if (self.random(1) < rate) {
                 let offset = self.randomGaussian() * 0.5;
                 let newx = x + offset;
                 return newx;
