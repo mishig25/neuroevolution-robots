@@ -30,12 +30,18 @@ class NeuralNetwork {
             /* Takes a 1D array */
             let input_layer = tf.tensor(user_input, [1, this.input_nodes]);
             let hidden_layer = input_layer.matMul(this.input_weights).sigmoid();
-            let output_layer = hidden_layer.matMul(this.output_weights).sigmoid();
+            let output_layer = hidden_layer.matMul(this.output_weights);
             output = output_layer.dataSync();
         });
         return output;
     }
 
+    saveWeights() {
+        const w1 = this.input_weights.dataSync();
+        const w2 = this.output_weights.dataSync();
+        localStorage.setItem("w1", w1);
+        localStorage.setItem("w2", w2);
+    }
     /**
      * Returns a new network with the same weights as this Neural Network
      * @returns {NeuralNetwork}
@@ -54,5 +60,5 @@ class NeuralNetwork {
     dispose() {
         this.input_weights.dispose();
         this.output_weights.dispose();
-    }
+    };
 }

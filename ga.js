@@ -42,7 +42,16 @@ class Generation {
     evolve(){
         // Store High Score
         this.generation += 1;
-        let gen_highscore = Math.max.apply(Math, this.species.map(o => o.score));
+        // let gen_highscore = Math.max.apply(Math, this.species.map(o => o.score));
+        let gen_highind = 0;
+        let gen_highscore = this.species[0].score;
+        for(let i=1; i<this.species.length; i++){
+            if (this.species[i].score > gen_highscore){
+                gen_highscore = this.species[i].score;
+                gen_highind = i;
+            }
+        }
+        this.species[gen_highind].saveWeights();
         this.high_score = gen_highscore > this.high_score ? gen_highscore : this.high_score;
         
         // Calculate Total Score of this Generation

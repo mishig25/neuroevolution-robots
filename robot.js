@@ -107,10 +107,11 @@ class Robot{
         let input = this.createBrainInput();
         let result = this.brain.predict(input);
         for (let i = 0; i < result.length; i++) {
-            let impulse = -2;
-            if (result[i] > .5){
-                impulse *= -1;
-            };
+            // let impulse = -2;
+            // if (result[i] > .5){
+            //     impulse *= -1;
+            // };
+            let impulse = this.mapRange(result[i],0.0,1.0,-.5,.5);
             const bodyPart = this.bodyPartsKeys[i];
             this.bodyParts[bodyPart].applyAngularImpulse(impulse);
         }
@@ -118,8 +119,8 @@ class Robot{
     start() {
         this.interval = setInterval(() => {
             this.think();
-            // this.updateScore();
-        }, 20);
+            this.updateScore();
+        }, 100);
     };
     kill() {
         // remove from world
@@ -250,5 +251,8 @@ class Robot{
         } while (rad >= 1 || rad == 0);
         var c = Math.sqrt(-2 * Math.log(rad) / rad);
         return x1 * c;
+    };
+    saveWeights(){
+        this.brain.saveWeights();
     };
 };
