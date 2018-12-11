@@ -15,8 +15,8 @@ class NeuralNetwork {
         this.output_nodes = output_nodes;
 
         // Initialize random weights
-        this.input_weights = tf.randomNormal([this.input_nodes, this.hidden_nodes]);
-        this.output_weights = tf.randomNormal([this.hidden_nodes, this.output_nodes]);
+        this.input_weights = tf.randomUniform([this.input_nodes, this.hidden_nodes]);
+        this.output_weights = tf.randomUniform([this.hidden_nodes, this.output_nodes]);
     }
 
     /**
@@ -30,7 +30,7 @@ class NeuralNetwork {
             /* Takes a 1D array */
             let input_layer = tf.tensor(user_input, [1, this.input_nodes]);
             let hidden_layer = input_layer.matMul(this.input_weights).sigmoid();
-            let output_layer = hidden_layer.matMul(this.output_weights);
+            let output_layer = hidden_layer.matMul(this.output_weights).sigmoid();
             output = output_layer.dataSync();
         });
         return output;

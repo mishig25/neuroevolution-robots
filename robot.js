@@ -88,7 +88,13 @@ class Robot{
         this.joints[name] = joint;
     };
     mapRange(num, in_min, in_max, out_min=0.0, out_max=1.0){
-        return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+        var result = (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+        if (result > out_max){
+            return out_max;
+        } else if (result < out_min){
+            return out_min;
+        }
+        return result;
     };
     createBrainInput(){
         let input = [];
@@ -107,11 +113,11 @@ class Robot{
         let input = this.createBrainInput();
         let result = this.brain.predict(input);
         for (let i = 0; i < result.length; i++) {
-            // let impulse = -2;
-            // if (result[i] > .5){
-            //     impulse *= -1;
-            // };
-            let impulse = this.mapRange(result[i],0.0,1.0,-.5,.5);
+            let impulse = -2;
+            if (result[i] > .5){
+                impulse *= -1;
+            };
+            // let impulse = this.mapRange(result[i],0.0,1.0,-.5,.5);
             const bodyPart = this.bodyPartsKeys[i];
             this.bodyParts[bodyPart].applyAngularImpulse(impulse);
         }
