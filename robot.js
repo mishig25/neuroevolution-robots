@@ -32,7 +32,10 @@ class Robot{
     updateScore(){
         // should be called every frame
         const vtcl = this.world.vtcl;
-        const head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
+        var head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
+        if (head_y < .5){
+            head_y -= 2;
+        };
         this.score += head_y;
     };
     coreBody(size, x, y) {
@@ -126,7 +129,7 @@ class Robot{
         this.interval = setInterval(() => {
             this.think();
             this.updateScore();
-        }, 100);
+        }, 50);
     };
     kill() {
         // remove from world
