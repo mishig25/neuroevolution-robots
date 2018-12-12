@@ -486,10 +486,13 @@ Viewer.prototype.drawCircle = function(shape, options) {
         this.size(w, h, ratio);
         ctx.scale(ratio, ratio);
         ctx.arc(cx, cy, r, 0, 2 * Math.PI);
-        if (options.fillStyle) {
-            ctx.fillStyle = options.fillStyle;
-            ctx.fill();
-        }
+        // if (options.fillStyle) {
+        ctx.fillStyle = `rgb(
+        ${Math.floor(150 * Math.random())},
+        ${Math.floor(150 * Math.random())},
+        ${Math.floor(150 * Math.random())})`;
+        ctx.fill();
+        // }
         ctx.lineTo(cx, cy);
         ctx.lineWidth = options.lineWidth;
         ctx.strokeStyle = options.strokeStyle;
@@ -561,7 +564,10 @@ Viewer.prototype.drawPolygon = function(shape, options) {
             ctx.closePath();
         }
         // if (options.fillStyle) {
-        ctx.fillStyle = '#f00';
+        ctx.fillStyle = `rgb(
+        ${Math.floor(150 * Math.random())},
+        ${Math.floor(150 * Math.random())},
+        ${Math.floor(150 * Math.random())})`;
         ctx.fill();
         ctx.closePath();
         // }
