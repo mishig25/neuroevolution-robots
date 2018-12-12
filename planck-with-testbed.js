@@ -13324,6 +13324,7 @@ Class.canvas = function(type, attributes, callback) {
   }
 
   var canvas = document.createElement('canvas');
+  canvas.setAttribute("id", "canvas");
   var context = canvas.getContext(type, attributes);
   var texture = new Texture(canvas);
 
@@ -13903,26 +13904,30 @@ function AppLoader(app, configs) {
 
   function resize() {
 
-    if (full) {
-      // screen.availWidth/Height?
-      width = (window.innerWidth > 0 ? window.innerWidth : screen.width);
-      height = (window.innerHeight > 0 ? window.innerHeight : screen.height);
+    // if (full) {
+    //   // screen.availWidth/Height?
+    //   width = (window.innerWidth > 0 ? window.innerWidth : screen.width);
+    //   height = (window.innerHeight > 0 ? window.innerHeight : screen.height);
 
-      canvas.style.width = width + 'px';
-      canvas.style.height = height + 'px';
+    //   canvas.style.width = width + 'px';
+    //   canvas.style.height = height + 'px';
 
-    } else {
-      width = canvas.clientWidth;
-      height = canvas.clientHeight;
-    }
+    // } else {
+    //   width = canvas.clientWidth;
+    //   height = canvas.clientHeight;
+    // }
 
-    width *= ratio;
-    height *= ratio;
+    // width *= ratio;
+    // height *= ratio;
 
-    if (canvas.width === width && canvas.height === height) {
-      return;
-    }
+    // if (canvas.width === width && canvas.height === height) {
+    //   return;
+    // }
 
+    width = 800;
+    height = 300;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
     canvas.width = width;
     canvas.height = height;
 
