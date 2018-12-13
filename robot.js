@@ -148,7 +148,6 @@ class Robot{
         this.bodyPartsKeys = null;
         this.joints = null;
         this.jointsKeys = null;
-        // this = null;
     };
     clone() {
         let new_robot = new Robot(this.world, this.size, this.x, this.y, this.id);

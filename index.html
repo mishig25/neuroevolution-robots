@@ -1,57 +1,39 @@
 <html>
-
+<style>
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 50px;
+    margin-right: 50px;
+} 
+</style>
 <body>
-    <script src="lib/planck-with-testbed.js"></script>
     <!-- Libraries -->
+    <script src="lib/planck-with-testbed.js"></script>
     <script src="lib/tf.js"></script>
-    <!-- NeuroEvolution -->
+    <!-- Neuroevolution -->
     <script src="./nn.js"></script>
     <script src="./ga.js"></script>
-    <!-- <script src="./ga.js"></script> -->
     <script src="./robot.js"></script>
-    <script>
-        planck.testbed('Pinball', function (testbed) {
-            var pl = planck, Vec2 = pl.Vec2;
-            var world = new pl.World(Vec2(0, -10));
-            
-            // testbed.hz = 1;
-            // testbed.speed = 1;
-
-            const sceneSize = 1;
-            const generationPeriod = 25;
-
-            const pt1 = Vec2(-70.0, -15.0);
-            const pt2 = Vec2(70.0, -15.0);
-            const pt3 = Vec2(pt1.x, pt1.y+sceneSize*10);
-            const pt4 = Vec2(pt2.x, pt2.y + sceneSize*10);
-            world.createBody().createFixture(pl.Edge(pt1, pt2));
-            world.createBody().createFixture(pl.Edge(pt1, pt3));
-            world.createBody().createFixture(pl.Edge(pt2, pt4));
-            world.vtcl = {min: pt1.y, max: pt3.y };
-            world.hztl = { min: pt1.x+sceneSize*5, max: pt2.x-sceneSize*5 };
-            
-        
-            let generation = new Generation(world, 10);
-            generation.initialize(Robot, sceneSize);
-            generation.test();
-
-            // Restart Generation after 5 seconds
-            setInterval(() => {
-                generation.evolve();
-                // console.log(generation.avg_score);
-                // settled = false;
-            }, 5000);
-
-            testbed.step = function () {
-                // rdoll.rot()
-                // box1.applyAngularImpulse(-100);
-                // console.log(mouse.getPosition())
-            }
-
-
-            return world;
-        });
-    </script>
+    <!-- Scene -->
+    <script src="./app.js"></script>
+    <h1><a id="NeuroevolutionBots_0"></a>Neuroevolution-Bots</h1>
+    <p>Neuroevolution-Bots is a personal project that demonstrates <a href="https://en.wikipedia.org/wiki/Neuroevolution">neuroevolution</a>
+        in a browser environment using <a href="https://js.tensorflow.org/">TensorFlow.js</a> (for neural nets) and HTML5
+        Canvas (for graphics). I tried to create a scaled down 2D version of the popular <a href="https://gym.openai.com/envs/Humanoid-v2/">Gym’s
+            Humanoid-v2 environment</a> using <a href="http://piqnt.com/planck.js/">Planck.js</a>, a JavaScript rewrite of
+        Box2D.</p>
+    <p>Source code available: <a href="https://github.com/mishig25/neuroevolution-robots">here</a></p>
+    <canvas id="canvas" width="800" height="300"></canvas>
+    <p>*live training is happening in your browser. Try dragging one of the bots</p>
+    <p>References and inspirations:</p>
+    <ul>
+        <li><a href="https://eng.uber.com/deep-neuroevolution/">Uber’s blogpost on Deep Neuroevolution</a></li>
+        <li><a href="https://github.com/openai/roboschool">Roboschool by OpenAI</a></li>
+        <li><a href="https://github.com/adityathebe/evolutionSimulator">Evolution Simulator by Aditya Thebe</a></li>
+        <li><a href="https://twitter.com/hardmaru/status/1007150247829594112?lang=en">Tweet by hardmaru</a></li>
+    </ul>
 </body>
 
 </html>
