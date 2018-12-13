@@ -15,8 +15,8 @@ class NeuralNetwork {
         this.output_nodes = output_nodes;
 
         // Initialize random weights
-        this.input_weights = tf.randomUniform([this.input_nodes, this.hidden_nodes]);
-        this.output_weights = tf.randomUniform([this.hidden_nodes, this.output_nodes]);
+        this.input_weights = tf.randomNormal([this.input_nodes, this.hidden_nodes]);
+        this.output_weights = tf.randomNormal([this.hidden_nodes, this.output_nodes]);
     }
 
     /**

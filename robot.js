@@ -30,13 +30,14 @@ class Robot{
         this.createJoint('rightArmUp', this.bodyParts.upper, this.bodyParts.rightArmUp, { x: x+size / 1.3333, y: y+size / 0.4 }, Math.PI / 3);
     };
     updateScore(){
-        // should be called every frame
         const vtcl = this.world.vtcl;
         var head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
         if (head_y < .5){
             head_y -= 2;
         };
-        this.score += head_y;
+        var right_movement = this.bodyParts.head.c_position.c.y - this.x;
+        right_movement = right_movement/2; // normalize
+        this.score += head_y + right_movement;
     };
     coreBody(size, x, y) {
         const w = size, h = size;
@@ -116,7 +117,7 @@ class Robot{
         let input = this.createBrainInput();
         let result = this.brain.predict(input);
         for (let i = 0; i < result.length; i++) {
-            let impulse = -2;
+            let impulse = -1;
             if (result[i] > .5){
                 impulse *= -1;
             };
@@ -218,7 +219,7 @@ class Robot{
         // TODO: scense size
         const y = (world.vtcl.max + world.vtcl.min) / 2;
         const hztl = world.hztl;
-        const x = Math.round(Math.random() * (hztl.max - hztl.min) + hztl.min);
+        const x = Math.round(Math.random() * (hztl.max - hztl.min)/7 + hztl.min);
         let child = new Robot(world, 1, x, y, 0);
         let input_shape = parentABrain.input_weights.shape;
         let output_shape = parentABrain.output_weights.shape;

@@ -27,7 +27,7 @@ class Generation {
         const y = (this.world.vtcl.max + this.world.vtcl.min) / 2;
         const hztl = this.world.hztl;
         for (let i = 0; i < this.population; i++) {
-            const x = Math.round(Math.random() * (hztl.max - hztl.min) + hztl.min);
+            const x = Math.round(Math.random() * (hztl.max - hztl.min)/7 + hztl.min);
             let robot = new Robot(this.world, sceneSize, x, y, i);
             this.species.push(robot);
         }
@@ -65,7 +65,6 @@ class Generation {
             this.species[i].fitness = this.species[i].score / total_score;
         };
 
-        // Store new generation temporarily in this array
         let new_generation = [];
 
         // Breeding
@@ -82,14 +81,12 @@ class Generation {
             let r1 = Math.random();
             let r2 = Math.random();
 
-            // console.log("r" , r);
             let parentA_id = 0;
             let parentB_id = 0;
             for (let j = 0; j < this.population; j++) {
 
                 if (score_x[j][1] >= r1) {
                     parentA_id = score_x[j][0];
-                    // console.log("selected", score_x[j][1]);
                     break;
                 }
             }
@@ -101,18 +98,12 @@ class Generation {
                     break;
                 }
             }
-            // console.log("best", score_x[0][0]);
-            // let parentA = this.species[score_x[0][0]].clone();
-            // let parentB = this.species[score_x[1][0]].clone();
 
-            // let parentA = this.species[parentA_id].clone();
-            // let parentB = this.species[parentB_id].clone();
-
-            // let child = parentA.crossover(parentB);
             let parentA = this.species[parentA_id];
             let parentB = this.species[parentB_id];
             let child = Robot.crossoverUpdated(this.world, parentA, parentB);
-            child.mutate(0.05);
+            const mutationRate = 0.1;
+            child.mutate(mutationRate);
             child.id = i;
             child.parents = [{ id: parentA.id, score: this.species[parentA.id].score }, { id: parentB.id, score: this.species[parentB.id].score }];
             new_generation.push(child);
@@ -120,15 +111,10 @@ class Generation {
         }
 
         // Kill Current Generation.
-        // i.e. Remove their bodies from MatterJS World and dispose their brain
         for (let i = 0; i < this.population; i++) {
             this.species[i].kill();
         }
-
         // Add new children to the current generation
         this.species = new_generation;
-        // for (let i = 0; i < this.population; i++) {
-        //     this.species[i].add_to_world(this.world);
-        // }
     }
 }
