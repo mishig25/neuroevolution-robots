@@ -103,7 +103,7 @@ class Generation {
             let parentA = this.species[parentA_id];
             let parentB = this.species[parentB_id];
             let child = Robot.crossover(this.world, parentA, parentB);
-            const mutationRate = 0.07;
+            const mutationRate = 0.05;
             document.getElementById("mrate").innerHTML = parseInt(mutationRate*100).toString()+'%';
             child.mutate(mutationRate);
             child.id = i;
