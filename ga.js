@@ -42,6 +42,7 @@ class Generation {
     evolve(){
         // Store High Score
         this.generation += 1;
+        document.getElementById("generation").innerHTML = this.generation.toString();
         // let gen_highscore = Math.max.apply(Math, this.species.map(o => o.score));
         let gen_highind = 0;
         let gen_highscore = this.species[0].score;
@@ -101,8 +102,9 @@ class Generation {
 
             let parentA = this.species[parentA_id];
             let parentB = this.species[parentB_id];
-            let child = Robot.crossoverUpdated(this.world, parentA, parentB);
-            const mutationRate = 0.1;
+            let child = Robot.crossover(this.world, parentA, parentB);
+            const mutationRate = 0.07;
+            document.getElementById("mrate").innerHTML = parseInt(mutationRate*100).toString()+'%';
             child.mutate(mutationRate);
             child.id = i;
             child.parents = [{ id: parentA.id, score: this.species[parentA.id].score }, { id: parentB.id, score: this.species[parentB.id].score }];

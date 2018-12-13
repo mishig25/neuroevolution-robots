@@ -1,4 +1,5 @@
 const pl = planck, Vec2 = pl.Vec2;
+
 class Robot{
     constructor(world,size,x,y,id){
         this.init = false;
@@ -117,7 +118,7 @@ class Robot{
         let input = this.createBrainInput();
         let result = this.brain.predict(input);
         for (let i = 0; i < result.length; i++) {
-            let impulse = -1;
+            let impulse = -1.5;
             if (result[i] > .5){
                 impulse *= -1;
             };
@@ -177,30 +178,7 @@ class Robot{
         this.brain.output_weights.dispose();
         this.brain.output_weights = tf.tensor(ho, ho_shape);
     };
-    crossover(partner) {
-        let parentA_in_dna = this.brain.input_weights.dataSync();
-        let parentA_out_dna = this.brain.output_weights.dataSync();
-        let parentB_in_dna = partner.brain.input_weights.dataSync();
-        let parentB_out_dna = partner.brain.output_weights.dataSync();
-
-        let mid = this.score / partner.score;
-
-        //let mid = Math.floor(Math.random() * parentA_in_dna.length);
-        let child_in_dna = [...parentA_in_dna.slice(0, mid), ...parentB_in_dna.slice(mid, parentB_in_dna.length)];
-        let child_out_dna = [...parentA_out_dna.slice(0, mid), ...parentB_out_dna.slice(mid, parentB_out_dna.length)];
-
-        let child = this.clone();
-        let input_shape = this.brain.input_weights.shape;
-        let output_shape = this.brain.output_weights.shape;
-
-        child.brain.dispose();
-
-        child.brain.input_weights = tf.tensor(child_in_dna, input_shape);
-        child.brain.output_weights = tf.tensor(child_out_dna, output_shape);
-
-        return child;
-    };
-    static crossoverUpdated(world, parentA, parentB) {
+    static crossover(world, parentA, parentB) {
         const parentABrain = parentA.brain.clone();
         const parentBBrain = parentB.brain.clone();
 

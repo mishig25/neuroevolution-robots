@@ -20,11 +20,34 @@ body{
     <script src="./app.js"></script>
     <h1><a id="NeuroevolutionBots_0"></a>Neuroevolution-Bots</h1>
     <p>Neuroevolution-Bots is a personal project that demonstrates <a href="https://en.wikipedia.org/wiki/Neuroevolution">neuroevolution</a>
-        in a browser environment using <a href="https://js.tensorflow.org/">TensorFlow.js</a> (for neural nets) and HTML5
-        Canvas (for graphics). I tried to create a scaled down 2D version of the popular <a href="https://gym.openai.com/envs/Humanoid-v2/">Gym’s
-            Humanoid-v2 environment</a> using <a href="http://piqnt.com/planck.js/">Planck.js</a>, a JavaScript rewrite of
-        Box2D.</p>
+    in a browser environment using <a href="https://js.tensorflow.org/">TensorFlow.js</a> (for neural nets) and HTML5
+    Canvas (for graphics). I tried to create a scaled down 2D version of the popular <a href="https://gym.openai.com/envs/Humanoid-v2/">Gym’s
+        Humanoid-v2 environment</a> using <a href="http://piqnt.com/planck.js/">Planck.js</a>, a JavaScript rewrite of
+    Box2D.</p>
+    <p>The bots in the simulation have simple brains that consist of a 3-layer perceptron. Input to the perceptron: bot’s
+    head position in the world space and angles of bot’s every joint; output of the perceptron: angular impulse to
+    bot’s joints. After every iteration, a fitness function chooses the most fit bots to the next iteration (fitness
+    score of a bot: how much the bot traveled to the right + how many times and how much bot’s head was in upright
+    position).</p>
     <p>Source code available: <a href="https://github.com/mishig25/neuroevolution-robots">here</a></p>
+    <table>
+        <tr>
+            <td>Goal:</td>
+            <td>bots get up and start walking to the right side of the screen</td>
+        </tr>
+        <tr>
+            <td>Generation:</td>
+            <td id="generation">1</td>
+        </tr>
+        <tr>
+            <td>Generation Period:</td>
+            <td id="gperiod">5 seconds</td>
+        </tr>
+        <tr>
+            <td>Muttion Rate:</td>
+            <td id="mrate">7%</td>
+        </tr>
+    </table>
     <canvas id="canvas" width="800" height="300"></canvas>
     <p>*live training is happening in your browser. Try dragging one of the bots</p>
     <p>References and inspirations:</p>

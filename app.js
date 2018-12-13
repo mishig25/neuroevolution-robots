@@ -1,12 +1,10 @@
-planck.testbed('Pinball', function (testbed) {
+planck.testbed('Neuroevolution-bots', function (testbed) {
     var pl = planck, Vec2 = pl.Vec2;
     var world = new pl.World(Vec2(0, -10));
-    
-    // testbed.hz = 1;
-    // testbed.speed = 1;
 
     const sceneSize = 1;
-    const generationPeriod = 25;
+    const generationPeriod = 5000;
+    document.getElementById("gperiod").innerHTML = parseInt(generationPeriod/1000).toString()+' seconds';
 
     const pt1 = Vec2(-70.0, -15.0);
     const pt2 = Vec2(70.0, -15.0);
@@ -23,17 +21,12 @@ planck.testbed('Pinball', function (testbed) {
     generation.initialize(Robot, sceneSize);
     generation.test();
 
-    // Restart Generation after 5 seconds
+    // Restart Generation every generationPeriod interval
     setInterval(() => {
         generation.evolve();
-        // console.log(generation.avg_score);
-        // settled = false;
-    }, 5000);
+    }, generationPeriod);
 
     testbed.step = function () {
-        // rdoll.rot()
-        // box1.applyAngularImpulse(-100);
-        // console.log(mouse.getPosition())
     }
 
 
