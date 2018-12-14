@@ -17,7 +17,7 @@ planck.testbed('Neuroevolution-bots', function (testbed) {
     world.hztl = { min: pt1.x+sceneSize*5, max: pt2.x-sceneSize*5 };
     
 
-    let generation = new Generation(world, 10);
+    let generation = new Generation(world, 20);
     generation.initialize(Robot, sceneSize);
     generation.test();
 

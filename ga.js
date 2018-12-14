@@ -67,7 +67,7 @@ class Generation {
             this.species[i].fitness = this.species[i].score / total_score;
         };
 
-        // my LOGIC
+        // choose fittest parents
         var parentA = { score: this.species[0].score, brain: this.species[0].brain.clone(), id: this.species[0].id};
         for(let i=1; i<this.species.length; i++){
             if (this.species[i].score > parentA.score){
@@ -91,6 +91,8 @@ class Generation {
         // update parents
         if (this.parents.length == 0 || this.parents[0].score < parentA.score){
             this.parents = [parentA, parentB];
+            console.log('New score:',parentA.score)
+            document.getElementById("highscore").innerHTML = parseInt(parentA.score).toString();
         }
 
         let new_generation = [];
@@ -105,32 +107,16 @@ class Generation {
             score_x[j][1] = total_fitness;
         }
         for (let i = 0; i < this.population; i++) {
-
-            // let r1 = Math.random();
-            // let r2 = Math.random();
-
-            // let parentA_id = 0;
-            // let parentB_id = 0;
-            // for (let j = 0; j < this.population; j++) {
-
-            //     if (score_x[j][1] >= r1) {
-            //         parentA_id = score_x[j][0];
-            //         break;
-            //     }
-            // }
-
-            // for (let j = 0; j < this.population; j++) {
-
-            //     if (score_x[j][1] >= r2) {
-            //         parentB_id = score_x[j][0];
-            //         break;
-            //     }
-            // }
-
-            // let parentA = this.species[parentA_id];
-            // let parentB = this.species[parentB_id];
-            let child = Robot.crossover(this.world, this.parents[0], this.parents[1]);
-            const mutationRate = 0.05;
+            var parent1 = 0;
+            var parent2 = 1;
+            const randomParents = Math.random();
+            if (randomParents > .33){
+                parent2 = 0;
+            } else if (randomParents > .66){
+                parent1 = 1;
+            }
+            let child = Robot.crossover(this.world, this.parents[parent1], this.parents[parent2]);
+            const mutationRate = 0.1 * Math.random();
             document.getElementById("mrate").innerHTML = parseInt(mutationRate*100).toString()+'%';
             child.mutate(mutationRate);
             child.id = i;

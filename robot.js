@@ -37,7 +37,8 @@ class Robot{
             head_y -= 2;
         };
         var right_movement = this.bodyParts.head.c_position.c.y - this.x;
-        right_movement = right_movement/2; // normalize
+        // dividing by 50 to give more emphases on standing up
+        right_movement = right_movement/50; 
         this.score += head_y + right_movement;
     };
     coreBody(size, x, y) {
@@ -194,7 +195,6 @@ class Robot{
         let child_out_dna = [...parentA_out_dna.slice(0, mid), ...parentB_out_dna.slice(mid, parentB_out_dna.length)];
 
         // create new child here
-        // TODO: scense size
         const y = (world.vtcl.max + world.vtcl.min) / 2;
         const hztl = world.hztl;
         const x = Math.round(Math.random() * (hztl.max - hztl.min)/7 + hztl.min);
