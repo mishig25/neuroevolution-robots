@@ -38,7 +38,7 @@ class Robot{
         };
         var right_movement = this.bodyParts.head.c_position.c.y - this.x;
         // dividing by 50 to give more emphases on standing up
-        right_movement = right_movement/50; 
+        right_movement = right_movement/20; 
         this.score += head_y + right_movement;
     };
     coreBody(size, x, y) {

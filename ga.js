@@ -117,6 +117,7 @@ class Generation {
             }
             let child = Robot.crossover(this.world, this.parents[parent1], this.parents[parent2]);
             const mutationRate = 0.1 * Math.random();
+            // const mutationRate = 0.02;
             document.getElementById("mrate").innerHTML = parseInt(mutationRate*100).toString()+'%';
             child.mutate(mutationRate);
             child.id = i;
