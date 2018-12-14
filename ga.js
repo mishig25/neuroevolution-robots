@@ -16,6 +16,7 @@ class Generation {
         this.total_score = 0;
         this.fitness = 0;
         this.progress = 0;
+        this.parents = [];
     }
 
     /**
@@ -40,7 +41,7 @@ class Generation {
     }
 
     evolve(){
-        // Store High Score
+        // increment generation score
         this.generation += 1;
         document.getElementById("generation").innerHTML = this.generation.toString();
         // let gen_highscore = Math.max.apply(Math, this.species.map(o => o.score));
@@ -66,6 +67,32 @@ class Generation {
             this.species[i].fitness = this.species[i].score / total_score;
         };
 
+        // my LOGIC
+        var parentA = { score: this.species[0].score, brain: this.species[0].brain.clone(), id: this.species[0].id};
+        for(let i=1; i<this.species.length; i++){
+            if (this.species[i].score > parentA.score){
+                parentA.brain.input_weights.dispose();
+                parentA.brain.output_weights.dispose();
+                parentA = { score: this.species[i].score, brain: this.species[i].brain.clone(), id: this.species[i].id };
+            }
+        }
+        var parentB;
+        for(let i=0; i<this.species.length; i++){
+            if (this.species[i].id != parentA.id){
+                if (parentB == undefined || parentB.score < this.species[i].score){
+                    if (parentB != undefined){
+                        parentB.brain.input_weights.dispose();
+                        parentB.brain.output_weights.dispose();
+                    }
+                    parentB = { score: this.species[i].score, brain: this.species[i].brain.clone(), id: this.species[i].id };
+                }
+            }
+        }
+        // update parents
+        if (this.parents.length == 0 || this.parents[0].score < parentA.score){
+            this.parents = [parentA, parentB];
+        }
+
         let new_generation = [];
 
         // Breeding
@@ -79,30 +106,30 @@ class Generation {
         }
         for (let i = 0; i < this.population; i++) {
 
-            let r1 = Math.random();
-            let r2 = Math.random();
+            // let r1 = Math.random();
+            // let r2 = Math.random();
 
-            let parentA_id = 0;
-            let parentB_id = 0;
-            for (let j = 0; j < this.population; j++) {
+            // let parentA_id = 0;
+            // let parentB_id = 0;
+            // for (let j = 0; j < this.population; j++) {
 
-                if (score_x[j][1] >= r1) {
-                    parentA_id = score_x[j][0];
-                    break;
-                }
-            }
+            //     if (score_x[j][1] >= r1) {
+            //         parentA_id = score_x[j][0];
+            //         break;
+            //     }
+            // }
 
-            for (let j = 0; j < this.population; j++) {
+            // for (let j = 0; j < this.population; j++) {
 
-                if (score_x[j][1] >= r2) {
-                    parentB_id = score_x[j][0];
-                    break;
-                }
-            }
+            //     if (score_x[j][1] >= r2) {
+            //         parentB_id = score_x[j][0];
+            //         break;
+            //     }
+            // }
 
-            let parentA = this.species[parentA_id];
-            let parentB = this.species[parentB_id];
-            let child = Robot.crossover(this.world, parentA, parentB);
+            // let parentA = this.species[parentA_id];
+            // let parentB = this.species[parentB_id];
+            let child = Robot.crossover(this.world, this.parents[0], this.parents[1]);
             const mutationRate = 0.05;
             document.getElementById("mrate").innerHTML = parseInt(mutationRate*100).toString()+'%';
             child.mutate(mutationRate);
