@@ -120,11 +120,10 @@ class Robot{
         let result = this.brain.predict(input);
         for (let i = 0; i < result.length; i++) {
             let impulse = -1.5;
-            if (result[i] > .5){
-                impulse *= -1;
-            };
+            if (result[i] > .5) impulse *= -1;
             // let impulse = this.mapRange(result[i],0.0,1.0,-.5,.5);
             const bodyPart = this.bodyPartsKeys[i];
+            if (bodyPart.includes('Leg')) impulse *= 2;
             this.bodyParts[bodyPart].applyAngularImpulse(impulse);
         }
     };
