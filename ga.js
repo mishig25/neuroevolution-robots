@@ -105,7 +105,7 @@ class Generation {
         if (this.parents.length == 0 || this.parents[0].score < parentA.score) {
             this.parents = [parentA, parentB];
             console.log('New score:', parentA.score)
-            document.getElementById("highscore").innerHTML = parseInt(parentA.score).toString();
+            document.getElementById("highscore").innerHTML = parentA.score.toFixed(2).toString();
         };
     };
 
