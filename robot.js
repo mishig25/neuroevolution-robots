@@ -21,7 +21,6 @@ class Robot{
         this.id = id;
         this.score = 0;
         this.fitness = 0;
-        this.parents = [];
         this.bodyParts = {};
         this.joints = {};
         this.createBody(size,x,y);
@@ -77,6 +76,7 @@ class Robot{
     * @param {number} y - birth y position
     * @param {boolean} rotate - upper or lower limb
     * @param {boolean} left - left or right limb
+    * @returns {Planck.DynamicBody} - limb
     */
     limb(name,size, x, y, rotate=false, left=true) {
         var w = size, h = 3 * size;
@@ -110,6 +110,7 @@ class Robot{
      * @param {number} y 
      * @param {Planck.Shape} shp 
      * @param {number} density 
+     * @returns {Planck.DynamicBody}
      */
     body_fixture(x, y, shp, density = 1.0) {
         const body_part = this.world.createDynamicBody(Vec2(x, y));
@@ -167,6 +168,7 @@ class Robot{
 
     /**
      * Creates input for the neural networks brain
+     * @returns {array} - the created input for the brain
      */
     createBrainInput() {
         let input = [];
@@ -200,6 +202,7 @@ class Robot{
 
     /**
      * Clones the bot
+     * @returns {Robot} - cloned bot
      */
     clone() {
         let new_robot = new Robot(this.world, this.size, this.x, this.y, this.id);
@@ -239,6 +242,7 @@ class Robot{
      * @param {Planck.World} world - current world where simulation is happening
      * @param {Robot} parentA - first parent
      * @param {Robot} parentB - second parent
+     * @returns {Robot} - offspring
      */
     static crossover(world, parentA, parentB) {
         const parentABrain = parentA.brain.clone();
@@ -288,7 +292,6 @@ class Robot{
         this.brain.dispose();
         this.brain = null;
         clearInterval(this.interval);
-        this.parents = null;
         this.bodyParts = null;
         this.bodyPartsKeys = null;
         this.joints = null;

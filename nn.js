@@ -17,7 +17,7 @@ class NeuralNetwork {
         // Initialize random weights
         this.input_weights = tf.randomNormal([this.input_nodes, this.hidden_nodes]);
         this.output_weights = tf.randomNormal([this.hidden_nodes, this.output_nodes]);
-    }
+    };
 
     /**
      * Takes in a 1D array and feed forwards through the network
@@ -33,7 +33,7 @@ class NeuralNetwork {
             output = output_layer.dataSync();
         });
         return output;
-    }
+    };
 
     /**
     * Save weights in browser's localStorage
@@ -43,7 +43,8 @@ class NeuralNetwork {
         const w2 = this.output_weights.dataSync();
         localStorage.setItem("w1", w1);
         localStorage.setItem("w2", w2);
-    }
+    };
+    
     /**
      * Returns a new network with the same weights as this Neural Network
      * @returns {NeuralNetwork}
@@ -54,7 +55,7 @@ class NeuralNetwork {
         clonie.input_weights = tf.clone(this.input_weights);
         clonie.output_weights = tf.clone(this.output_weights);
         return clonie;
-    }
+    };
 
     /**
      * Dispose the input and output weights from the memory
@@ -63,4 +64,4 @@ class NeuralNetwork {
         this.input_weights.dispose();
         this.output_weights.dispose();
     };
-}
+};
