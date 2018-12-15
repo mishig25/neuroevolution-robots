@@ -23,7 +23,6 @@ class NeuralNetwork {
      * Takes in a 1D array and feed forwards through the network
      * @param {array} - Array of inputs
      */
-
     predict(user_input) {
         let output;
         tf.tidy(() => {
@@ -36,6 +35,9 @@ class NeuralNetwork {
         return output;
     }
 
+    /**
+    * Save weights in browser's localStorage
+    */
     saveWeights() {
         const w1 = this.input_weights.dataSync();
         const w2 = this.output_weights.dataSync();
