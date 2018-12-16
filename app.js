@@ -26,9 +26,5 @@ planck.testbed('Neuroevolution-bots', function (testbed) {
         generation.evolve();
     }, generationPeriod);
 
-    testbed.step = function () {
-    }
-
-
     return world;
 });
