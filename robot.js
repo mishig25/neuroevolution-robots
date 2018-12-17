@@ -22,7 +22,6 @@ class Robot{
         this.createBody(size,x,y);
         this.jointsKeys = Object.keys(this.joints);
         this.bodyPartsKeys = Object.keys(this.bodyParts);
-        // this.brain = new NeuralNetwork(this.jointsKeys.length+1, 30, this.bodyPartsKeys.length);
         this.brain = brain;
         this.brain.score = 0;
         this.init = true;

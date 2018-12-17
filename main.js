@@ -13,6 +13,7 @@ var ITERATIONS = 1000;
 var START_HIDDEN_SIZE = 0;
 var MUTATION_RATE = 0.3;
 var ELITISM_PERCENT = 0.1;
+var generationPeriod = 5000;
 
 // Trained population
 var USE_TRAINED_POP = false;
@@ -28,8 +29,8 @@ var highestScore = 0;
 
 /** Construct the genetic algorithm */
 function initNeat() {
-    const len_input = 
-    const len_output = 
+    const len_input = 12;
+    const len_output = 11;
         neat = new Neat(len_input, len_output,
         null,
         {
@@ -65,7 +66,7 @@ function initNeat() {
 }
 
 /** Start the evaluation of the current generation */
-function startEvaluation() {
+function startEvaluation(world) {
     // destroy all players
     players.forEach((player) => {
         player.kill();
@@ -74,17 +75,23 @@ function startEvaluation() {
     players = [];
     highestScore = 0;
 
+    const y = (world.vtcl.max + world.vtcl.min) / 2;
+    const hztl = world.hztl;
     for (var genome in neat.population) {
         genome = neat.population[genome];
-        var player = new Robot(genome);
+        const x = Math.round(Math.random() * (hztl.max - hztl.min) / 7 + hztl.min);
+        var player = new Robot(genome,world,1,x,y);
         players.push(player);
     }
 
     // TODO: start bot movement
+    players.forEach((player) => {
+        player.start();
+    });
 }
 
 /** End the evaluation of the current generation */
-function endEvaluation() {
+function endEvaluation(world) {
     console.log('Generation:', neat.generation, '- average score:', neat.getAverage());
 
     neat.sort();
@@ -105,7 +112,7 @@ function endEvaluation() {
     neat.mutate();
 
     neat.generation++;
-    startEvaluation();
+    startEvaluation(world);
 }
 
 
@@ -127,11 +134,12 @@ planck.testbed('Neuroevolution-bots', function (testbed) {
     world.vtcl = { min: pt1.y, max: pt3.y };
     world.hztl = { min: pt1.x + sceneSize * 5, max: pt2.x - sceneSize * 5 };
 
-
-
+    initNeat();
+    for (var i = 0; i < 100; i++) neat.mutate();
+    startEvaluation(world);
     // Restart Generation every generationPeriod interval
     setInterval(() => {
-        generation.evolve();
+        endEvaluation(world);
     }, generationPeriod);
 
     return world;
