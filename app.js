@@ -3,7 +3,7 @@ planck.testbed('Neuroevolution-bots', function (testbed) {
     var world = new pl.World(Vec2(0, -10));
 
     const sceneSize = 1;
-    const generationPeriod = 5000;
+    const generationPeriod = 10000;
     document.getElementById("gperiod").innerHTML = parseInt(generationPeriod/1000).toString()+' seconds';
 
     const pt1 = Vec2(-70.0, -15.0);
@@ -17,7 +17,7 @@ planck.testbed('Neuroevolution-bots', function (testbed) {
     world.hztl = { min: pt1.x+sceneSize*5, max: pt2.x-sceneSize*5 };
     
 
-    let generation = new Generation(world, 20);
+    let generation = new Generation(world, 30);
     generation.initialize(Robot, sceneSize);
     generation.startBotMovement();
 
