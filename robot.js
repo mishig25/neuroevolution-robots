@@ -16,6 +16,7 @@ class Robot{
         this.world = world;
         this.size = size;
         this.x = x;
+        this.xx = x;
         this.y = y;
         this.bodyParts = {};
         this.joints = {};
@@ -193,11 +194,11 @@ class Robot{
         if (head_y < .5) {
             head_y -= 2;
         };
-        var right_movement = this.bodyParts.head.c_position.c.x - this.x;
         // dividing by 20 to give more emphases on standing up
-        const right_movement_weight = 1/20
-        right_movement *= right_movement_weight;
-        this.brain.score += head_y + right_movement;
+        const right_score = this.bodyParts.head.c_position.c.x - this.xx;
+        this.xx = this.bodyParts.head.c_position.c.x;
+
+        this.brain.score += head_y + Math.pow(right_score, 4);;
     };
 
     // METHODS MISCELLAENOUS

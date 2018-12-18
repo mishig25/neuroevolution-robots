@@ -13,7 +13,7 @@ var ITERATIONS = 1000;
 var START_HIDDEN_SIZE = 0;
 var MUTATION_RATE = 0.3;
 var ELITISM_PERCENT = 0.1;
-var generationPeriod = 5000;
+var generationPeriod = 10000;
 
 // Trained population
 var USE_TRAINED_POP = false;
@@ -121,7 +121,6 @@ planck.testbed('Neuroevolution-bots', function (testbed) {
     var world = new pl.World(Vec2(0, -10));
 
     const sceneSize = 1;
-    const generationPeriod = 5000;
     document.getElementById("gperiod").innerHTML = parseInt(generationPeriod / 1000).toString() + ' seconds';
 
     const pt1 = Vec2(-70.0, -15.0);
