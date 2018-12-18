@@ -193,7 +193,7 @@ class Robot{
         if (head_y < .5) {
             head_y -= 2;
         };
-        var right_movement = this.bodyParts.head.c_position.c.y - this.x;
+        var right_movement = this.bodyParts.head.c_position.c.x - this.x;
         // dividing by 20 to give more emphases on standing up
         const right_movement_weight = 1/20
         right_movement *= right_movement_weight;
