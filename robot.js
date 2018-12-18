@@ -189,7 +189,7 @@ class Robot{
         const vtcl = this.world.vtcl;
         const head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
         input.push(head_y);
-        const hztl = fthis.world.hztl;
+        const hztl = this.world.hztl;
         const head_x = this.mapRange(this.bodyParts.head.c_position.c.x, hztl.min, hztl.max);
         input.push(head_x);
         return input;
