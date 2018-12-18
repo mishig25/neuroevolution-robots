@@ -22,6 +22,7 @@ class Robot{
         this.world = world;
         this.size = size;
         this.x = x;
+        this.xx = x;
         this.y = y;
         this.id = id;
         this.score = 0;
@@ -188,7 +189,7 @@ class Robot{
         const vtcl = this.world.vtcl;
         const head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
         input.push(head_y);
-        const hztl = this.world.hztl;
+        const hztl = fthis.world.hztl;
         const head_x = this.mapRange(this.bodyParts.head.c_position.c.x, hztl.min, hztl.max);
         input.push(head_x);
         return input;
@@ -198,16 +199,19 @@ class Robot{
      * Updates bot's fitness score by getting coordiantes of bot's head position
      */
     updateScore() {
-        const vtcl = this.world.vtcl;
-        var head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
-        if (head_y < .5) {
-            head_y -= 2;
-        };
-        var right_movement = this.bodyParts.head.c_position.c.y - this.x;
+        // const vtcl = this.world.vtcl;
+        // var head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
+        // if (head_y < .5) {
+        //     head_y -= 2;
+        // };
+        var right_movement = this.bodyParts.head.c_position.c.x - this.x;
         // dividing by 20 to give more emphases on standing up
-        const right_movement_weight = 1/4;
-        right_movement *= right_movement_weight;
-        this.score += head_y + right_movement;
+        // const right_movement_weight = 1/4;
+        // right_movement *= right_movement_weight;
+
+        const new_score = right_movement - this.xx;
+        this.xx = right_movement;
+        this.score += Math.pow(new_score, 2);
     };
 
     /**
