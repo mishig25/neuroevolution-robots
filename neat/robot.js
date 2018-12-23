@@ -1,5 +1,9 @@
 const pl = planck, Vec2 = pl.Vec2;
 
+function degToRad(deg) {
+    return deg * (Math.PI / 180);
+}
+
 /** Robot class for creating a bot in Planck.js' environment */
 class Robot {
 
@@ -50,8 +54,9 @@ class Robot {
         this.limb('rightLeg', size / 3, x + size / 1.5, y - size / 0.285);
         this.limb('leftArm', size / 3.5, x - size * 3.6, y + size * 2.5, true);
         this.limb('rightArm', size / 3.5, x + size * 1.9, y + size * 2.5, true, false);
-        this.createJoint('leftLegUp', this.bodyParts.lower, this.bodyParts.leftLegUp, pl.Vec2(x - size / 1.3333, y - size / 2), Math.PI / 2, Math.PI / 8);
-        this.createJoint('rightLegUp', this.bodyParts.lower, this.bodyParts.rightLegUp, pl.Vec2(x + size / 1.3333, y - size / 2), Math.PI / 8, Math.PI / 2);
+        const rotAngle = degToRad(20);
+        this.createJoint('leftLegUp', this.bodyParts.lower, this.bodyParts.leftLegUp, pl.Vec2(x - size / 1.3333, y - size / 2), rotAngle, rotAngle);
+        this.createJoint('rightLegUp', this.bodyParts.lower, this.bodyParts.rightLegUp, pl.Vec2(x + size / 1.3333, y - size / 2), rotAngle, rotAngle);
         this.createJoint('leftArmUp', this.bodyParts.upper, this.bodyParts.leftArmUp, { x: x - size / 1.3333, y: y + size / 0.4 }, Math.PI / 3);
         this.createJoint('rightArmUp', this.bodyParts.upper, this.bodyParts.rightArmUp, { x: x + size / 1.3333, y: y + size / 0.4 }, Math.PI / 3);
     };
@@ -89,10 +94,11 @@ class Robot {
         if (rotate) w = 3 * size, h = size;
         const boxshp = pl.Box(w, h);
         const jointName = name + 'Low';
+        const rotAngle = degToRad(20);
         if (rotate) {
             const upper = this.body_fixture(x + w * 2, y, boxshp);
             const lower = this.body_fixture(x, y, boxshp);
-            this.createJoint(jointName, upper, lower, { x: x + w, y: y }, Math.PI / 2);
+            this.createJoint(jointName, upper, lower, { x: x + w, y: y }, rotAngle);
             if (left) {
                 this.bodyParts[name + 'Up'] = upper;
                 this.bodyParts[name + 'Low'] = lower;
@@ -104,7 +110,7 @@ class Robot {
         }
         const lower = this.body_fixture(x, y, boxshp);
         const upper = this.body_fixture(x, y + h * 2, boxshp);
-        this.createJoint(jointName, upper, lower, { x: x, y: y + h }, Math.PI / 2);
+        this.createJoint(jointName, upper, lower, { x: x, y: y + h }, rotAngle);
         this.bodyParts[name + 'Up'] = upper;
         this.bodyParts[name + 'Low'] = lower;
         return upper;
@@ -206,10 +212,11 @@ class Robot {
         const vtcl = this.world.vtcl;
         var head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
         if (this.canUpdateScore) {
-            this.brain.score = this.bodyParts.head.c_position.c.x;
+            this.brain.score = this.bodyParts.head.c_position.c.x - this.x;
         }
         if (head_y < .6) {
             this.canUpdateScore = false;
+            this.brain.score = -1000;
         };
     };
 
