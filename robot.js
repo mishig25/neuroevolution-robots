@@ -23,6 +23,10 @@ class Robot{
         this.createBody(size,x,y);
         this.jointsKeys = Object.keys(this.joints);
         this.bodyPartsKeys = Object.keys(this.bodyParts);
+        this.legPartsKeys = [];
+        this.bodyPartsKeys.forEach((part) => {
+            if (part.includes('Leg')) this.legPartsKeys.push(part);
+        });
         this.brain = brain;
         this.brain.score = 0;
         this.init = true;
@@ -155,11 +159,10 @@ class Robot{
         let input = this.createBrainInput();
         let result = this.brain.activate(input);
         for (let i = 0; i < result.length; i++) {
-            let impulse = -1.5;
+            var impulse = -2.0;
             if (result[i] > .5) impulse *= -1;
             // let impulse = this.mapRange(result[i],0.0,1.0,-.5,.5);
-            const bodyPart = this.bodyPartsKeys[i];
-            if (bodyPart.includes('Leg')) impulse *= 2;
+            const bodyPart = this.legPartsKeys[i];
             this.bodyParts[bodyPart].applyAngularImpulse(impulse);
         }
     };
@@ -171,9 +174,11 @@ class Robot{
     createBrainInput() {
         let input = [];
         this.jointsKeys.forEach((jointKey) => {
-            const jt = this.joints[jointKey];
-            const value = this.mapRange(jt.getJointAngle(), jt.getLowerLimit(), jt.getUpperLimit());
-            input.push(value);
+            if (jointKey.includes('Leg')){
+                const jt = this.joints[jointKey];
+                const value = this.mapRange(jt.getJointAngle(), jt.getLowerLimit(), jt.getUpperLimit());
+                input.push(value);
+            }
         });
         // head vertical position
         const vtcl = this.world.vtcl;
@@ -191,14 +196,9 @@ class Robot{
     updateScore() {
         const vtcl = this.world.vtcl;
         var head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
-        if (head_y < .5) {
-            head_y -= 2;
+        if (head_y > .6) {
+            this.brain.score = this.bodyParts.head.c_position.c.x;
         };
-        // dividing by 20 to give more emphases on standing up
-        const right_score = this.bodyParts.head.c_position.c.x - this.xx;
-        this.xx = this.bodyParts.head.c_position.c.x;
-
-        this.brain.score += head_y + Math.pow(right_score, 4);;
     };
 
     // METHODS MISCELLAENOUS

@@ -29,8 +29,8 @@ var highestScore = 0;
 
 /** Construct the genetic algorithm */
 function initNeat() {
-    const len_input = 12;
-    const len_output = 11;
+    const len_input = 6;
+    const len_output = 4;
         neat = new Neat(len_input, len_output,
         null,
         {
