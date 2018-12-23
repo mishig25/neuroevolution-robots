@@ -16,12 +16,16 @@ class Robot{
         this.world = world;
         this.size = size;
         this.x = x;
-        this.xx = x;
+        this.canUpdateScore = true;
         this.y = y;
         this.bodyParts = {};
         this.joints = {};
         this.createBody(size,x,y);
         this.jointsKeys = Object.keys(this.joints);
+        this.jointsLegKeys = [];
+        this.jointsKeys.forEach((part) => {
+            if (part.includes('Leg')) this.jointsLegKeys.push(part);
+        });
         this.bodyPartsKeys = Object.keys(this.bodyParts);
         this.legPartsKeys = [];
         this.bodyPartsKeys.forEach((part) => {
@@ -134,7 +138,10 @@ class Robot{
         const limits = {
             lowerAngle: -lowerAngle,
             upperAngle: upperAngle,
-            enableLimit: true
+            maxMotorTorque: 100.0,
+            enableLimit: true,
+            motorSpeed: 0,
+            enableMotor: true
         }
         const joint = this.world.createJoint(pl.RevoluteJoint(limits, bodyA, bodyB, anchor));
         this.joints[name] = joint;
@@ -158,12 +165,14 @@ class Robot{
     think(){
         let input = this.createBrainInput();
         let result = this.brain.activate(input);
+        const MOTOR_SPEED = 100;
         for (let i = 0; i < result.length; i++) {
-            var impulse = -2.0;
-            if (result[i] > .5) impulse *= -1;
-            // let impulse = this.mapRange(result[i],0.0,1.0,-.5,.5);
-            const bodyPart = this.legPartsKeys[i];
-            this.bodyParts[bodyPart].applyAngularImpulse(impulse);
+            const jt = this.joints[this.jointsLegKeys[i]];
+            if (result[i] > .5){
+                jt.setMotorSpeed(MOTOR_SPEED);
+            }else{
+                jt.setMotorSpeed(-MOTOR_SPEED);
+            }
         }
     };
 
@@ -196,8 +205,11 @@ class Robot{
     updateScore() {
         const vtcl = this.world.vtcl;
         var head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
-        if (head_y > .6) {
+        if (this.canUpdateScore){
             this.brain.score = this.bodyParts.head.c_position.c.x;
+        }
+        if (head_y < .6) {
+            this.canUpdateScore = false;
         };
     };
 
