@@ -1,7 +1,7 @@
 const pl = planck, Vec2 = pl.Vec2;
 
 /** Robot class for creating a bot in Planck.js' environment */
-class Robot{
+class Robot {
 
     /**
     * Takes in world, size, x, y
@@ -11,7 +11,7 @@ class Robot{
     * @param {number} x
     * @param {number} y
     */
-    constructor(brain,world,size,x,y){
+    constructor(brain, world, size, x, y) {
         this.init = false;
         this.world = world;
         this.size = size;
@@ -20,7 +20,7 @@ class Robot{
         this.y = y;
         this.bodyParts = {};
         this.joints = {};
-        this.createBody(size,x,y);
+        this.createBody(size, x, y);
         this.jointsKeys = Object.keys(this.joints);
         this.jointsLegKeys = [];
         this.jointsKeys.forEach((part) => {
@@ -44,16 +44,16 @@ class Robot{
     * @param {number} x - birth x position
     * @param {number} y - birth y position
     */
-    createBody(size,x,y){
+    createBody(size, x, y) {
         this.coreBody(size, x, y);
-        this.limb('leftLeg',size / 3, x-size / 1.5, y-size / 0.285);
-        this.limb('rightLeg',size / 3, x+size / 1.5, y-size / 0.285);
-        this.limb('leftArm',size / 3.5, x-size*3.6, y+size*2.5, true);
-        this.limb('rightArm',size / 3.5, x+size * 1.9, y+size * 2.5, true, false);
-        this.createJoint('leftLegUp', this.bodyParts.lower, this.bodyParts.leftLegUp, pl.Vec2(x-size/1.3333,y-size/2), Math.PI / 2, Math.PI / 8);
-        this.createJoint('rightLegUp', this.bodyParts.lower, this.bodyParts.rightLegUp, pl.Vec2(x+size/1.3333,y-size/2), Math.PI / 8, Math.PI / 2);
-        this.createJoint('leftArmUp', this.bodyParts.upper, this.bodyParts.leftArmUp, {x:x-size/1.3333,y:y+size/0.4}, Math.PI / 3);
-        this.createJoint('rightArmUp', this.bodyParts.upper, this.bodyParts.rightArmUp, { x: x+size / 1.3333, y: y+size / 0.4 }, Math.PI / 3);
+        this.limb('leftLeg', size / 3, x - size / 1.5, y - size / 0.285);
+        this.limb('rightLeg', size / 3, x + size / 1.5, y - size / 0.285);
+        this.limb('leftArm', size / 3.5, x - size * 3.6, y + size * 2.5, true);
+        this.limb('rightArm', size / 3.5, x + size * 1.9, y + size * 2.5, true, false);
+        this.createJoint('leftLegUp', this.bodyParts.lower, this.bodyParts.leftLegUp, pl.Vec2(x - size / 1.3333, y - size / 2), Math.PI / 2, Math.PI / 8);
+        this.createJoint('rightLegUp', this.bodyParts.lower, this.bodyParts.rightLegUp, pl.Vec2(x + size / 1.3333, y - size / 2), Math.PI / 8, Math.PI / 2);
+        this.createJoint('leftArmUp', this.bodyParts.upper, this.bodyParts.leftArmUp, { x: x - size / 1.3333, y: y + size / 0.4 }, Math.PI / 3);
+        this.createJoint('rightArmUp', this.bodyParts.upper, this.bodyParts.rightArmUp, { x: x + size / 1.3333, y: y + size / 0.4 }, Math.PI / 3);
     };
 
     /**
@@ -84,17 +84,17 @@ class Robot{
     * @param {boolean} left - left or right limb
     * @returns {Planck.DynamicBody} - limb
     */
-    limb(name,size, x, y, rotate=false, left=true) {
+    limb(name, size, x, y, rotate = false, left = true) {
         var w = size, h = 3 * size;
         if (rotate) w = 3 * size, h = size;
         const boxshp = pl.Box(w, h);
         const jointName = name + 'Low';
-        if(rotate){
+        if (rotate) {
             const upper = this.body_fixture(x + w * 2, y, boxshp);
             const lower = this.body_fixture(x, y, boxshp);
             this.createJoint(jointName, upper, lower, { x: x + w, y: y }, Math.PI / 2);
-            if (left){
-                this.bodyParts[name+'Up'] = upper;
+            if (left) {
+                this.bodyParts[name + 'Up'] = upper;
                 this.bodyParts[name + 'Low'] = lower;
                 return upper;
             }
@@ -134,7 +134,7 @@ class Robot{
     * @param {number} lowerAngle - min angle joint can reach
     * @param {number} upperAngle - max angle joint can reach
     */
-    createJoint(name, bodyA, bodyB, anchor, lowerAngle, upperAngle = lowerAngle){
+    createJoint(name, bodyA, bodyB, anchor, lowerAngle, upperAngle = lowerAngle) {
         const limits = {
             lowerAngle: -lowerAngle,
             upperAngle: upperAngle,
@@ -162,15 +162,15 @@ class Robot{
     /**
      * Makes the bot move by getting an output fron neurla networks brain
      */
-    think(){
+    think() {
         let input = this.createBrainInput();
         let result = this.brain.activate(input);
         const MOTOR_SPEED = 100;
         for (let i = 0; i < result.length; i++) {
             const jt = this.joints[this.jointsLegKeys[i]];
-            if (result[i] > .5){
+            if (result[i] > .5) {
                 jt.setMotorSpeed(MOTOR_SPEED);
-            }else{
+            } else {
                 jt.setMotorSpeed(-MOTOR_SPEED);
             }
         }
@@ -183,7 +183,7 @@ class Robot{
     createBrainInput() {
         let input = [];
         this.jointsKeys.forEach((jointKey) => {
-            if (jointKey.includes('Leg')){
+            if (jointKey.includes('Leg')) {
                 const jt = this.joints[jointKey];
                 const value = this.mapRange(jt.getJointAngle(), jt.getLowerLimit(), jt.getUpperLimit());
                 input.push(value);
@@ -205,7 +205,7 @@ class Robot{
     updateScore() {
         const vtcl = this.world.vtcl;
         var head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
-        if (this.canUpdateScore){
+        if (this.canUpdateScore) {
             this.brain.score = this.bodyParts.head.c_position.c.x;
         }
         if (head_y < .6) {
