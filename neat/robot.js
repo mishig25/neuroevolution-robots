@@ -4,34 +4,39 @@ function degToRad(deg) {
     return deg * (Math.PI / 180);
 }
 
-
 /** Robot class for creating a bot in Planck.js' environment */
-class Robot{
+class Robot {
 
     /**
-    * Takes in world, size, x, y, id
+    * Takes in world, size, x, y
     * @constructor
     * @param {Planck.World} world
     * @param {number} size
     * @param {number} x
     * @param {number} y
-    * @param {number} id
     */
-    constructor(world,size,x,y,id){
+    constructor(brain, world, size, x, y) {
         this.init = false;
         this.world = world;
         this.size = size;
         this.x = x;
+        this.canUpdateScore = true;
         this.y = y;
-        this.id = id;
-        this.score = 0;
-        this.fitness = 0;
         this.bodyParts = {};
         this.joints = {};
-        this.createBody(size,x,y);
+        this.createBody(size, x, y);
         this.jointsKeys = Object.keys(this.joints);
+        this.jointsLegKeys = [];
+        this.jointsKeys.forEach((part) => {
+            if (part.includes('Leg')) this.jointsLegKeys.push(part);
+        });
         this.bodyPartsKeys = Object.keys(this.bodyParts);
-        this.brain = new NeuralNetwork(this.jointsKeys.length+2, 30, this.bodyPartsKeys.length);
+        this.legPartsKeys = [];
+        this.bodyPartsKeys.forEach((part) => {
+            if (part.includes('Leg')) this.legPartsKeys.push(part);
+        });
+        this.brain = brain;
+        this.brain.score = 0;
         this.init = true;
     };
 
@@ -43,17 +48,17 @@ class Robot{
     * @param {number} x - birth x position
     * @param {number} y - birth y position
     */
-    createBody(size,x,y){
+    createBody(size, x, y) {
         this.coreBody(size, x, y);
-        this.limb('leftLeg',size / 3, x-size / 1.5, y-size / 0.285);
-        this.limb('rightLeg',size / 3, x+size / 1.5, y-size / 0.285);
-        this.limb('leftArm',size / 3.5, x-size*3.6, y+size*2.5, true);
-        this.limb('rightArm',size / 3.5, x+size * 1.9, y+size * 2.5, true, false);
-        const rotAngle = degToRad(10);
-        this.createJoint('leftLegUp', this.bodyParts.lower, this.bodyParts.leftLegUp, pl.Vec2(x-size/1.3333,y-size/2), rotAngle, rotAngle);
-        this.createJoint('rightLegUp', this.bodyParts.lower, this.bodyParts.rightLegUp, pl.Vec2(x+size/1.3333,y-size/2), rotAngle, rotAngle);
-        this.createJoint('leftArmUp', this.bodyParts.upper, this.bodyParts.leftArmUp, {x:x-size/1.3333,y:y+size/0.4}, Math.PI / 3);
-        this.createJoint('rightArmUp', this.bodyParts.upper, this.bodyParts.rightArmUp, { x: x+size / 1.3333, y: y+size / 0.4 }, Math.PI / 3);
+        this.limb('leftLeg', size / 3, x - size / 1.5, y - size / 0.285);
+        this.limb('rightLeg', size / 3, x + size / 1.5, y - size / 0.285);
+        this.limb('leftArm', size / 3.5, x - size * 3.6, y + size * 2.5, true);
+        this.limb('rightArm', size / 3.5, x + size * 1.9, y + size * 2.5, true, false);
+        const rotAngle = degToRad(20);
+        this.createJoint('leftLegUp', this.bodyParts.lower, this.bodyParts.leftLegUp, pl.Vec2(x - size / 1.3333, y - size / 2), rotAngle, rotAngle);
+        this.createJoint('rightLegUp', this.bodyParts.lower, this.bodyParts.rightLegUp, pl.Vec2(x + size / 1.3333, y - size / 2), rotAngle, rotAngle);
+        this.createJoint('leftArmUp', this.bodyParts.upper, this.bodyParts.leftArmUp, { x: x - size / 1.3333, y: y + size / 0.4 }, Math.PI / 3);
+        this.createJoint('rightArmUp', this.bodyParts.upper, this.bodyParts.rightArmUp, { x: x + size / 1.3333, y: y + size / 0.4 }, Math.PI / 3);
     };
 
     /**
@@ -84,18 +89,18 @@ class Robot{
     * @param {boolean} left - left or right limb
     * @returns {Planck.DynamicBody} - limb
     */
-    limb(name,size, x, y, rotate=false, left=true) {
+    limb(name, size, x, y, rotate = false, left = true) {
         var w = size, h = 3 * size;
         if (rotate) w = 3 * size, h = size;
         const boxshp = pl.Box(w, h);
         const jointName = name + 'Low';
-        const rotAngle = degToRad(10);
-        if(rotate){
+        const rotAngle = degToRad(20);
+        if (rotate) {
             const upper = this.body_fixture(x + w * 2, y, boxshp);
             const lower = this.body_fixture(x, y, boxshp);
             this.createJoint(jointName, upper, lower, { x: x + w, y: y }, rotAngle);
-            if (left){
-                this.bodyParts[name+'Up'] = upper;
+            if (left) {
+                this.bodyParts[name + 'Up'] = upper;
                 this.bodyParts[name + 'Low'] = lower;
                 return upper;
             }
@@ -135,11 +140,14 @@ class Robot{
     * @param {number} lowerAngle - min angle joint can reach
     * @param {number} upperAngle - max angle joint can reach
     */
-    createJoint(name, bodyA, bodyB, anchor, lowerAngle, upperAngle = lowerAngle){
+    createJoint(name, bodyA, bodyB, anchor, lowerAngle, upperAngle = lowerAngle) {
         const limits = {
             lowerAngle: -lowerAngle,
             upperAngle: upperAngle,
-            enableLimit: true
+            maxMotorTorque: 100.0,
+            enableLimit: true,
+            motorSpeed: 0,
+            enableMotor: true
         }
         const joint = this.world.createJoint(pl.RevoluteJoint(limits, bodyA, bodyB, anchor));
         this.joints[name] = joint;
@@ -160,16 +168,17 @@ class Robot{
     /**
      * Makes the bot move by getting an output fron neurla networks brain
      */
-    think(){
+    think() {
         let input = this.createBrainInput();
-        let result = this.brain.predict(input);
+        let result = this.brain.activate(input);
+        const MOTOR_SPEED = 100;
         for (let i = 0; i < result.length; i++) {
-            let impulse = -1.5;
-            if (result[i] > .5) impulse *= -1;
-            // let impulse = this.mapRange(result[i],0.0,1.0,-.5,.5);
-            const bodyPart = this.bodyPartsKeys[i];
-            if (bodyPart.includes('Leg')) impulse *= 2;
-            this.bodyParts[bodyPart].applyAngularImpulse(impulse);
+            const jt = this.joints[this.jointsLegKeys[i]];
+            if (result[i] > .5) {
+                jt.setMotorSpeed(MOTOR_SPEED);
+            } else {
+                jt.setMotorSpeed(-MOTOR_SPEED);
+            }
         }
     };
 
@@ -180,15 +189,17 @@ class Robot{
     createBrainInput() {
         let input = [];
         this.jointsKeys.forEach((jointKey) => {
-            const jt = this.joints[jointKey];
-            const value = this.mapRange(jt.getJointAngle(), jt.getLowerLimit(), jt.getUpperLimit());
-            input.push(value);
+            if (jointKey.includes('Leg')) {
+                const jt = this.joints[jointKey];
+                const value = this.mapRange(jt.getJointAngle(), jt.getLowerLimit(), jt.getUpperLimit());
+                input.push(value);
+            }
         });
         // head vertical position
         const vtcl = this.world.vtcl;
+        const hztl = this.world.hztl;
         const head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
         input.push(head_y);
-        const hztl = this.world.hztl;
         const head_x = this.mapRange(this.bodyParts.head.c_position.c.x, hztl.min, hztl.max);
         input.push(head_x);
         return input;
@@ -200,89 +211,13 @@ class Robot{
     updateScore() {
         const vtcl = this.world.vtcl;
         var head_y = this.mapRange(this.bodyParts.head.c_position.c.y, vtcl.min, vtcl.max);
-        if (head_y < .5) {
-            head_y -= 2;
-        };
-        var right_movement = this.bodyParts.head.c_position.c.y - this.x;
-        // dividing by 20 to give more emphases on standing up
-        const right_movement_weight = 1/4;
-        right_movement *= right_movement_weight;
-        this.score += head_y + right_movement;
-    };
-
-    /**
-     * Clones the bot
-     * @returns {Robot} - cloned bot
-     */
-    clone() {
-        let new_robot = new Robot(this.world, this.size, this.x, this.y, this.id);
-        new_robot.brain.dispose();
-        new_robot.brain = this.brain.clone();
-        return new_robot;
-    };
-
-    /**
-     * Mutates the bot (i.e. mutates weights of the brain nn)
-     * @param {number} rate - mutation rate [0,1]
-     */
-    mutate(rate = 0.05) {
-        const self = this;
-        function fn(x) {
-            if (self.random(1) < rate) {
-                let offset = self.randomGaussian() * 0.5;
-                let newx = x + offset;
-                return newx;
-            }
-            return x;
+        if (this.canUpdateScore) {
+            this.brain.score = this.bodyParts.head.c_position.c.x - this.x;
         }
-
-        let ih = this.brain.input_weights.dataSync().map(fn);
-        let ih_shape = this.brain.input_weights.shape;
-        this.brain.input_weights.dispose();
-        this.brain.input_weights = tf.tensor(ih, ih_shape);
-
-        let ho = this.brain.output_weights.dataSync().map(fn);
-        let ho_shape = this.brain.output_weights.shape;
-        this.brain.output_weights.dispose();
-        this.brain.output_weights = tf.tensor(ho, ho_shape);
-    };
-
-    /**
-     * Creates an offspring, given two parents
-     * @param {Planck.World} world - current world where simulation is happening
-     * @param {Robot} parentA - first parent
-     * @param {Robot} parentB - second parent
-     * @returns {Robot} - offspring
-     */
-    static crossover(world, parentA, parentB) {
-        const parentABrain = parentA.brain.clone();
-        const parentBBrain = parentB.brain.clone();
-
-        let parentA_in_dna = parentABrain.input_weights.dataSync();
-        let parentA_out_dna = parentABrain.output_weights.dataSync();
-        let parentB_in_dna = parentBBrain.input_weights.dataSync();
-        let parentB_out_dna = parentBBrain.output_weights.dataSync();
-
-        let mid = parentA.score / parentB.score;
-
-        //let mid = Math.floor(Math.random() * parentA_in_dna.length);
-        let child_in_dna = [...parentA_in_dna.slice(0, mid), ...parentB_in_dna.slice(mid, parentB_in_dna.length)];
-        let child_out_dna = [...parentA_out_dna.slice(0, mid), ...parentB_out_dna.slice(mid, parentB_out_dna.length)];
-
-        // create new child here
-        const y = (world.vtcl.max + world.vtcl.min) / 2;
-        const hztl = world.hztl;
-        const x = Math.round(Math.random() * (hztl.max - hztl.min)/7 + hztl.min);
-        let child = new Robot(world, 1, x, y, 0);
-        let input_shape = parentABrain.input_weights.shape;
-        let output_shape = parentABrain.output_weights.shape;
-
-        child.brain.dispose();
-
-        child.brain.input_weights = tf.tensor(child_in_dna, input_shape);
-        child.brain.output_weights = tf.tensor(child_out_dna, output_shape);
-
-        return child;
+        if (head_y < .6) {
+            this.canUpdateScore = false;
+            this.brain.score = -1000;
+        };
     };
 
     // METHODS MISCELLAENOUS
@@ -298,9 +233,6 @@ class Robot{
         Object.values(this.bodyParts).forEach((bodyPart) => {
             this.world.destroyBody(bodyPart);
         });
-        this.score = null;
-        this.brain.dispose();
-        this.brain = null;
         clearInterval(this.interval);
         this.bodyParts = null;
         this.bodyPartsKeys = null;
@@ -325,44 +257,4 @@ class Robot{
         }
         return result;
     };
-
-    /** generates a random number */
-    random(min, max) {
-        var rand = Math.random();
-        if (typeof min === 'undefined') {
-            return rand;
-        } else if (typeof max === 'undefined') {
-            if (min instanceof Array) {
-                return min[Math.floor(rand * min.length)];
-            } else {
-                return rand * min;
-            }
-        } else {
-            if (min > max) {
-                var tmp = min;
-                min = max;
-                max = tmp;
-            }
-
-            return rand * (max - min) + min;
-        }
-    };
-
-    /** generates gaussian random number */
-    randomGaussian() {
-        var x1, x2, rad, y1;
-        do {
-            x1 = 2 * this.random() - 1;
-            x2 = 2 * this.random() - 1;
-            rad = x1 * x1 + x2 * x2;
-        } while (rad >= 1 || rad == 0);
-        var c = Math.sqrt(-2 * Math.log(rad) / rad);
-        return x1 * c;
-    };
-
-    /** save brain nn weights */
-    saveWeights(){
-        this.brain.saveWeights();
-    };
-    
 };
