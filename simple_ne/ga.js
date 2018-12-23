@@ -104,8 +104,10 @@ class Generation {
         // update parents
         if (this.parents.length == 0 || this.parents[0].score < parentA.score) {
             this.parents = [parentA, parentB];
-            console.log('New score:', parentA.score)
-            document.getElementById("highscore").innerHTML = parentA.score.toFixed(2).toString();
+            console.log('New score:', parentA.score);
+            var sum = 0;
+            this.species.forEach((specie) => {sum += specie.score});
+            document.getElementById("score").innerHTML = (sum/this.species.length).toFixed(2).toString();
         };
     };
 

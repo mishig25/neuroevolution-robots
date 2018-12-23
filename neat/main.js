@@ -11,7 +11,7 @@ Config.warnings = false;
 var PLAYER_AMOUNT = 30;
 var ITERATIONS = 1000;
 var START_HIDDEN_SIZE = 0;
-var MUTATION_RATE = 0.3;
+var MUTATION_RATE = 0.05;
 var ELITISM_PERCENT = 0.1;
 var generationPeriod = 10000;
 
@@ -92,7 +92,9 @@ function startEvaluation(world) {
 
 /** End the evaluation of the current generation */
 function endEvaluation(world) {
-    console.log('Generation:', neat.generation, '- average score:', neat.getAverage());
+    document.getElementById("generation").innerHTML = parseInt(neat.generation + 1).toString();
+    document.getElementById("score").innerHTML = neat.getAverage().toFixed(2).toString();
+    document.getElementById("mrate").innerHTML = parseInt(neat.mutationRate*100).toString() + '%';
 
     neat.sort();
     var newPopulation = [];

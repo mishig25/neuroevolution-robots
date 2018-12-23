@@ -48,7 +48,7 @@ body{
         </tr>
         <tr>
             <td>Goal:</td>
-            <td>bots get up and start walking to the right side of the screen</td>
+            <td>walk to the right side of the screen while not falling down</td>
         </tr>
         <tr>
             <td>Generation:</td>
@@ -63,8 +63,8 @@ body{
             <td id="mrate">5%</td>
         </tr>
         <tr>
-            <td>Highest Score:</td>
-            <td id="highscore">0</td>
+            <td>Avg Score:</td>
+            <td id="score">0</td>
         </tr>
     </table>
     <canvas id="canvas" width="800" height="300"></canvas>
@@ -77,32 +77,32 @@ body{
         <li><a href="https://twitter.com/hardmaru/status/1007150247829594112?lang=en">Tweet by hardmaru</a></li>
     </ul>
 </body>
-    <script>
-        const algo = sessionStorage.getItem('algo');
-        const d = document,
-            h = d.getElementsByTagName('head')[0];
-        var scrpts = ["./neat/robot.js", "./neat/main.js"];
-        if (algo == null || algo == 'vne') {
-            document.getElementById("algo").selectedIndex = 0;
-            scrpts = ["./simple_ne/nn.js", "./simple_ne/ga.js",
-                "./simple_ne/robot.js", "./simple_ne/app.js"]
-        }else{
-            document.getElementById("algo").selectedIndex = 1;
-        }
-        scrpts.forEach((src) => {
-            var s = d.createElement('script');
-            s.type = 'text/javascript';
-            s.async = true;
-            s.src = src;
-            h.appendChild(s);
-        })
-    </script>
 <script>
     function algoChange() {
-        const val = document.getElementById("algo").value;
-        sessionStorage.setItem('algo', val);
-        location.reload();
-    };
+            const val = document.getElementById("algo").value;
+            sessionStorage.setItem('algo', val);
+            location.reload();
+        };
+
+    const algo = sessionStorage.getItem('algo');
+    const d = document,
+          h = d.getElementsByTagName('head')[0];
+    var scrpts;
+    if (algo == null || algo == 'vne') {
+        document.getElementById("algo").selectedIndex = 0;
+        scrpts = ["./simple_ne/nn.js", "./simple_ne/ga.js",
+            "./simple_ne/robot.js", "./simple_ne/main.js"]
+    }else{
+        document.getElementById("algo").selectedIndex = 1;
+        scrpts = ["./neat/robot.js", "./neat/main.js"];
+    }
+    scrpts.forEach((src) => {
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = src;
+        h.appendChild(s);
+    })
 </script>
 
 </html>
