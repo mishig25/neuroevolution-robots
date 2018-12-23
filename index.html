@@ -1,6 +1,9 @@
 <html>
     <head>
+        <!-- Libraries -->
         <script src="https://cdn.rawgit.com/wagenaartje/neataptic/a7610e38/dist/neataptic.js"></script>
+        <script src="lib/tf.js"></script>
+        <script src="lib/planck-with-testbed.js"></script>
     </head>
 <style>
 body{
@@ -12,17 +15,6 @@ body{
 } 
 </style>
 <body>
-    <!-- Libraries -->
-    <script src="lib/planck-with-testbed.js"></script>
-    <!-- Neuroevolution -->
-    <script src="./neat/robot.js"></script>
-    <!-- Scene -->
-    <script src="./neat/main.js"></script>
-    <!-- <script src="./simple_ne/nn.js"></script>
-    <script src="./simple_ne/ga.js"></script>
-    <script src="./simple_ne/robot.js"></script> -->
-    <!-- Scene -->
-    <!-- <script src="./simple_ne/app.js"></script> -->
     <h1><a id="NeuroevolutionBots_0"></a>Neuroevolution-Bots</h1>
     <p>Neuroevolution-Bots is a personal project that demonstrates <a href="https://en.wikipedia.org/wiki/Neuroevolution">neuroevolution</a>
     in a browser environment using <a href="https://js.tensorflow.org/">TensorFlow.js</a> (for neural nets) and HTML5
@@ -36,6 +28,24 @@ body{
     position).</p>
     <p>Source code available: <a href="https://github.com/mishig25/neuroevolution-robots">here</a></p>
     <table>
+        <tr>
+            <td>Algorithm:</td>
+            <td>
+                <select id="algo" onchange="algoChange()">
+                    <option value="vne">Vanilla Neuroevolution</option>
+                    <option value="neat">NEAT</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Training:</td>
+            <td id="training">
+                <select>
+                    <option value="start">Start from Scratch</option>
+                    <option value="pre-trained">Load Pre-trained Weights</option>
+                </select>
+            </td>
+        </tr>
         <tr>
             <td>Goal:</td>
             <td>bots get up and start walking to the right side of the screen</td>
@@ -67,5 +77,32 @@ body{
         <li><a href="https://twitter.com/hardmaru/status/1007150247829594112?lang=en">Tweet by hardmaru</a></li>
     </ul>
 </body>
+    <script>
+        const algo = sessionStorage.getItem('algo');
+        const d = document,
+            h = d.getElementsByTagName('head')[0];
+        var scrpts = ["./neat/robot.js", "./neat/main.js"];
+        if (algo == null || algo == 'vne') {
+            document.getElementById("algo").selectedIndex = 0;
+            scrpts = ["./simple_ne/nn.js", "./simple_ne/ga.js",
+                "./simple_ne/robot.js", "./simple_ne/app.js"]
+        }else{
+            document.getElementById("algo").selectedIndex = 1;
+        }
+        scrpts.forEach((src) => {
+            var s = d.createElement('script');
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = src;
+            h.appendChild(s);
+        })
+    </script>
+<script>
+    function algoChange() {
+        const val = document.getElementById("algo").value;
+        sessionStorage.setItem('algo', val);
+        location.reload();
+    };
+</script>
 
 </html>
