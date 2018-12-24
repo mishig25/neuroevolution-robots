@@ -17,6 +17,13 @@ class NeuralNetwork {
         // Initialize random weights
         this.input_weights = tf.randomNormal([this.input_nodes, this.hidden_nodes]);
         this.output_weights = tf.randomNormal([this.hidden_nodes, this.output_nodes]);
+
+        // Load pre-trained
+        const pretrain = sessionStorage.getItem('pretrain');
+        if (pretrain == 'yes'){
+            this.input_weights = tf.tensor(pre_w1, this.input_weights.shape);
+            this.output_weights = tf.tensor(pre_w2, this.output_weights.shape);
+        };
     };
 
     /**

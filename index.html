@@ -40,10 +40,10 @@ body{
         </tr>
         <tr>
             <td>Training:</td>
-            <td id="training">
-                <select>
-                    <option value="start">Start from Scratch</option>
-                    <option value="pre-trained">Load Pre-trained Weights</option>
+            <td>
+                <select  id="pretrain" onchange="pretrainChange()">
+                    <option value="no">Start from Scratch</option>
+                    <option value="yes">Load Pre-trained Weights</option>
                 </select>
             </td>
         </tr>
@@ -83,7 +83,13 @@ body{
             const val = document.getElementById("algo").value;
             sessionStorage.setItem('algo', val);
             location.reload();
-        };
+    };
+    
+    function pretrainChange(){
+        const val = document.getElementById("pretrain").value;
+        sessionStorage.setItem('pretrain', val);
+        location.reload();
+    };
 
     const algo = sessionStorage.getItem('algo');
     const d = document,
@@ -91,7 +97,7 @@ body{
     var scrpts;
     if (algo == null || algo == 'vne') {
         document.getElementById("algo").selectedIndex = 0;
-        scrpts = ["./simple_ne/nn.js", "./simple_ne/ga.js",
+        scrpts = ["./simple_ne/pretrained.js", "./simple_ne/nn.js", "./simple_ne/ga.js",
             "./simple_ne/robot_sne.js", "./simple_ne/main.js"]
     }else{
         document.getElementById("algo").selectedIndex = 1;

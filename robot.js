@@ -53,7 +53,7 @@ class Robot {
         this.limb('rightLeg', size / 3, x + size / 1.5, y - size / 0.285);
         this.limb('leftArm', size / 3.5, x - size * 3.6, y + size * 2.5, true);
         this.limb('rightArm', size / 3.5, x + size * 1.9, y + size * 2.5, true, false);
-        const rotAngle = degToRad(20);
+        const rotAngle = degToRad(25);
         this.createJoint('leftLegUp', this.bodyParts.lower, this.bodyParts.leftLegUp, pl.Vec2(x - size / 1.3333, y - size / 2), rotAngle, rotAngle);
         this.createJoint('rightLegUp', this.bodyParts.lower, this.bodyParts.rightLegUp, pl.Vec2(x + size / 1.3333, y - size / 2), rotAngle, rotAngle);
         this.createJoint('leftArmUp', this.bodyParts.upper, this.bodyParts.leftArmUp, { x: x - size / 1.3333, y: y + size / 0.4 }, Math.PI / 3);
@@ -93,7 +93,7 @@ class Robot {
         if (rotate) w = 3 * size, h = size;
         const boxshp = pl.Box(w, h);
         const jointName = name + 'Low';
-        const rotAngle = degToRad(20);
+        const rotAngle = degToRad(25);
         if (rotate) {
             const upper = this.body_fixture(x + w * 2, y, boxshp);
             const lower = this.body_fixture(x, y, boxshp);
