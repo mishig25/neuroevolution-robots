@@ -4,6 +4,7 @@
         <script src="https://cdn.rawgit.com/wagenaartje/neataptic/a7610e38/dist/neataptic.js"></script>
         <script src="lib/tf.js"></script>
         <script src="lib/planck-with-testbed.js"></script>
+        <script src="./robot.js"></script>
     </head>
 <style>
 body{
@@ -91,10 +92,10 @@ body{
     if (algo == null || algo == 'vne') {
         document.getElementById("algo").selectedIndex = 0;
         scrpts = ["./simple_ne/nn.js", "./simple_ne/ga.js",
-            "./simple_ne/robot.js", "./simple_ne/main.js"]
+            "./simple_ne/robot_sne.js", "./simple_ne/main.js"]
     }else{
         document.getElementById("algo").selectedIndex = 1;
-        scrpts = ["./neat/robot.js", "./neat/main.js"];
+        scrpts = ["./neat/robot_neat.js", "./neat/main.js"];
     }
     scrpts.forEach((src) => {
         var s = d.createElement('script');

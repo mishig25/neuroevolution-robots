@@ -80,7 +80,7 @@ function startEvaluation(world) {
     for (var genome in neat.population) {
         genome = neat.population[genome];
         const x = Math.round(Math.random() * (hztl.max - hztl.min) / 7 + hztl.min);
-        var player = new Robot(genome,world,1,x,y);
+        var player = new RobotNeat(genome,world,1,x,y);
         players.push(player);
     }
 

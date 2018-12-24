@@ -18,7 +18,7 @@ planck.testbed('Neuroevolution-bots', function (testbed) {
     
 
     let generation = new Generation(world, 30);
-    generation.initialize(Robot, sceneSize);
+    generation.initialize(sceneSize);
     generation.startBotMovement();
 
     // Restart Generation every generationPeriod interval
