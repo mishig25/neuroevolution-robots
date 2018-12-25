@@ -90,27 +90,27 @@ body{
         location.reload();
     };
     
-    // function pretrainChange(){
-    //     const val = document.getElementById("pretrain").value;
-    //     sessionStorage.setItem('pretrain', val);
-    //     location.reload();
-    // };
+    function pretrainChange(){
+        const val = document.getElementById("pretrain").value;
+        sessionStorage.setItem('pretrain', val);
+        setTimeout(() => {location.reload()}, 200);
+    };
 
     const algo = sessionStorage.getItem('algo');
     const pretrain = sessionStorage.getItem('pretrain');
     console.log('PRETRAIN',pretrain)
     const d = document,
           h = d.getElementsByTagName('head')[0];
-    // if (pretrain == null || algo == 'no') {
-    //     document.getElementById("pretrain").selectedIndex = 0;
-    // } else {
-    //     document.getElementById("pretrain").selectedIndex = 1;
-    // };
+    if (pretrain == null || pretrain == 'no') {
+        document.getElementById("pretrain").selectedIndex = 0;
+    } else {
+        document.getElementById("pretrain").selectedIndex = 1;
+    };
     var scrpts;
     if (algo == null || algo == 'vne') {
         document.getElementById("algo").selectedIndex = 0;
-        scrpts = ["./simple_ne/pretrained.js", "./simple_ne/nn.js", "./simple_ne/ga.js",
-            "./simple_ne/robot_sne.js"];
+        scrpts = ["./vanilla_ne/pretrained.js", "./vanilla_ne/nn.js", "./vanilla_ne/ga.js",
+            "./vanilla_ne/robot_vne.js"];
     }else{
         document.getElementById("algo").selectedIndex = 1;
         scrpts = ["./neat/pretrained.js", "./neat/robot_neat.js", 

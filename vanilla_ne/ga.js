@@ -32,7 +32,7 @@ class Generation {
         const hztl = this.world.hztl;
         for (let i = 0; i < this.population; i++) {
             const x = Math.round(Math.random() * (hztl.max - hztl.min)/7 + hztl.min);
-            let robot = new RobotSne(this.world, x, y, i);
+            let robot = new RobotVNE(this.world, x, y, i);
             this.species.push(robot);
         }
         this.startBotMovement();
@@ -60,7 +60,7 @@ class Generation {
             } else if (randomParents > .66){
                 parent1 = 1;
             };
-            let child = RobotSne.crossover(this.world, this.parents[parent1], this.parents[parent2]);
+            let child = RobotVNE.crossover(this.world, this.parents[parent1], this.parents[parent2]);
             const mutationRate = 0.1 * Math.random();
             // const mutationRate = 0.02;
             updateUI("mrate", parseInt(mutationRate * 100).toString() + '%');

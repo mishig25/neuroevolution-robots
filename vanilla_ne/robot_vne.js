@@ -1,5 +1,5 @@
 /** Robot class for creating a bot in Planck.js' environment */
-class RobotSne extends Robot{
+class RobotVNE extends Robot{
 
     /**
     * Takes in world, size, x, y, id
@@ -41,7 +41,7 @@ class RobotSne extends Robot{
      * @returns {Robot} - cloned bot
      */
     clone() {
-        let new_robot = new RobotSne(this.world, this.size, this.x, this.y, this.id);
+        let new_robot = new RobotVNE(this.world, this.size, this.x, this.y, this.id);
         new_robot.brain.dispose();
         new_robot.brain = this.brain.clone();
         return new_robot;
@@ -99,7 +99,7 @@ class RobotSne extends Robot{
         const y = (world.vtcl.max + world.vtcl.min) / 2;
         const hztl = world.hztl;
         const x = Math.round(Math.random() * (hztl.max - hztl.min)/7 + hztl.min);
-        let child = new RobotSne(world, x, y, 0);
+        let child = new RobotVNE(world, x, y, 0);
         let input_shape = parentABrain.input_weights.shape;
         let output_shape = parentABrain.output_weights.shape;
 
