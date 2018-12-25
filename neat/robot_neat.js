@@ -9,8 +9,8 @@ class RobotNeat extends Robot{
     * @param {number} x
     * @param {number} y
     */
-    constructor(brain, world, size, x, y) {
-        super(world, size, x, y);
+    constructor(brain, world, x, y) {
+        super(world, x, y);
         this.brain = brain;
         this.brain.score = 0;
     };

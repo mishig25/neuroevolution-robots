@@ -13,12 +13,6 @@ var START_HIDDEN_SIZE = 0;
 var MUTATION_RATE = 0.05;
 var ELITISM_PERCENT = 0.1;
 
-// // Global vars
-// pretrained_population
-
-// var prevavg = -100000;
-// var prevbest = -100000;
-
 class NEAT{
     constructor(world) {
         this.world = world;
@@ -56,7 +50,7 @@ class NEAT{
     };
 
     /** Start the evaluation of the current generation */
-    startEvaluation() {
+    initialize(pretrained) {
         // destroy all players
         this.bots.forEach((bot) => {
             bot.kill();
@@ -66,10 +60,13 @@ class NEAT{
 
         const y = (this.world.vtcl.max + this.world.vtcl.min) / 2;
         const hztl = this.world.hztl;
+
+        if (pretrained == true) this.neat.population = pretrained_population;
+
         for (var genome in this.neat.population) {
             genome = this.neat.population[genome];
             const x = Math.round(Math.random() * (hztl.max - hztl.min) / 7 + hztl.min);
-            var bot = new RobotNeat(genome, this.world, 1, x, y);
+            var bot = new RobotNeat(genome, this.world, x, y);
             this.bots.push(bot);
         }
 
@@ -80,29 +77,29 @@ class NEAT{
     };
 
     /** End the evaluation of the current generation */
-    endEvaluation() {
+    evolve() {
         this.neat.sort();
 
         this.updateStats();
 
-        var newPopulation = [];
+        var new_pop = [];
 
         // Elitism
         for (var i = 0; i < this.neat.elitism; i++) {
-            newPopulation.push(this.neat.population[i]);
+            new_pop.push(this.neat.population[i]);
         }
 
         // Breed the next individuals
         for (var i = 0; i < this.neat.popsize - this.neat.elitism; i++) {
-            newPopulation.push(this.neat.getOffspring());
+            new_pop.push(this.neat.getOffspring());
         }
 
         // Replace the old population with the new population
-        this.neat.population = newPopulation;
+        this.neat.population = new_pop;
         this.neat.mutate();
 
         this.neat.generation++;
-        this.startEvaluation();
+        this.initialize();
     };
 
     updateStats(){
@@ -110,17 +107,5 @@ class NEAT{
         updateUI("score", this.neat.getAverage().toFixed(2).toString());
         updateUI("mrate", parseInt(this.neat.mutationRate * 100).toString() + '%');
         updateUI("maxscore", this.neat.population[0].score.toFixed(2).toString());
-        
-                // if (prevavg < this.neat.getAverage() && prevbest < this.neat.population[0].score) {
-        //     const saved_weights = [];
-        //     this.neat.population.forEach((pop) => {
-        //         const popjon = pop.toJSON();
-        //         saved_weights.push(popjon);
-        //     });
-        //     console.log(saved_weights);
-        // }
-
-        // prevavg = this.neat.getAverage();
-        // prevbest = this.neat.population[0].score;
-    }
+    };
 };

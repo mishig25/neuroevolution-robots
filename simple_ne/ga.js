@@ -27,14 +27,15 @@ class Generation {
      * @param {number} sceneSize - current environment scale
      */
 
-    initialize(sceneSize) {
+    initialize(args) {
         const y = (this.world.vtcl.max + this.world.vtcl.min) / 2;
         const hztl = this.world.hztl;
         for (let i = 0; i < this.population; i++) {
             const x = Math.round(Math.random() * (hztl.max - hztl.min)/7 + hztl.min);
-            let robot = new RobotSne(this.world, sceneSize, x, y, i);
+            let robot = new RobotSne(this.world, x, y, i);
             this.species.push(robot);
         }
+        this.startBotMovement();
     }
 
     /**
@@ -43,7 +44,7 @@ class Generation {
     evolve(){
         // increment generation score
         this.generation += 1;
-        document.getElementById("generation").innerHTML = this.generation.toString();
+        updateUI("generation", this.generation.toString());
 
         this.chooseFittestParents();
 
@@ -62,7 +63,7 @@ class Generation {
             let child = RobotSne.crossover(this.world, this.parents[parent1], this.parents[parent2]);
             const mutationRate = 0.1 * Math.random();
             // const mutationRate = 0.02;
-            document.getElementById("mrate").innerHTML = parseInt(mutationRate*100).toString()+'%';
+            updateUI("mrate", parseInt(mutationRate * 100).toString() + '%');
             child.mutate(mutationRate);
             child.id = i;
             new_generation.push(child);
@@ -104,11 +105,13 @@ class Generation {
         // update parents
         if (this.parents.length == 0 || this.parents[0].score < parentA.score) {
             this.parents = [parentA, parentB];
-            console.log('New score:', parentA.score);
-            parentA.brain.saveWeights();
+            // console.log('New score:', parentA.score);
+            // parentA.brain.saveWeights();
             var sum = 0;
             this.species.forEach((specie) => {sum += specie.score});
-            document.getElementById("score").innerHTML = (sum/this.species.length).toFixed(2).toString();
+
+            updateUI("score", (sum / this.species.length).toFixed(2).toString());
+            updateUI("maxscore", parentA.score.toFixed(2).toString());
         };
     };
 

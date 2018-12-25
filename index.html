@@ -4,6 +4,7 @@
         <script src="https://cdn.rawgit.com/wagenaartje/neataptic/a7610e38/dist/neataptic.js"></script>
         <script src="lib/tf.js"></script>
         <script src="lib/planck-with-testbed.js"></script>
+        <script src="lib/utils.js"></script>
         <script src="./robot.js"></script>
     </head>
 <style>
@@ -67,6 +68,10 @@ body{
             <td>Avg Score:</td>
             <td id="score">0</td>
         </tr>
+        <tr>
+            <td>Max Score:</td>
+            <td id="maxscore">0</td>
+        </tr>
     </table>
     <canvas id="canvas" width="800" height="300"></canvas>
     <p>*live training is happening in your browser. Try dragging one of the bots</p>
@@ -92,16 +97,18 @@ body{
     };
 
     const algo = sessionStorage.getItem('algo');
+    const pretrain = sessionStorage.getItem('pretrain');
     const d = document,
           h = d.getElementsByTagName('head')[0];
     var scrpts;
     if (algo == null || algo == 'vne') {
         document.getElementById("algo").selectedIndex = 0;
         scrpts = ["./simple_ne/pretrained.js", "./simple_ne/nn.js", "./simple_ne/ga.js",
-            "./simple_ne/robot_sne.js", "./simple_ne/main.js"]
+            "./simple_ne/robot_sne.js"];
     }else{
         document.getElementById("algo").selectedIndex = 1;
-        scrpts = ["./neat/robot_neat.js", "./neat/main.js"];
+        scrpts = ["./neat/pretrained.js", "./neat/robot_neat.js", 
+                "./neat/neat.js"];
     }
     scrpts.forEach((src) => {
         var s = d.createElement('script');
@@ -109,7 +116,12 @@ body{
         s.async = true;
         s.src = src;
         h.appendChild(s);
-    })
+    });
+    if (pretrain == null || algo == 'no'){
+        document.getElementById("pretrain").selectedIndex = 0;
+    }else{
+        document.getElementById("pretrain").selectedIndex = 1;
+    };
 </script>
-
+<script src="./main.js"></script>
 </html>

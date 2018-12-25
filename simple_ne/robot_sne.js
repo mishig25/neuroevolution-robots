@@ -10,8 +10,8 @@ class RobotSne extends Robot{
     * @param {number} y
     * @param {number} id
     */
-    constructor(world,size,x,y,id){
-        super(world, size, x, y);
+    constructor(world, x, y, id){
+        super(world, x, y);
         this.brain = new NeuralNetwork(6, 30, 4);
         this.score = 0;
         this.fitness = 0;

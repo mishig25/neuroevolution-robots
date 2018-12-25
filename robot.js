@@ -1,10 +1,3 @@
-const pl = planck, Vec2 = pl.Vec2;
-
-function degToRad(deg) {
-    return deg * (Math.PI / 180);
-}
-
-
 /** Robot class for creating a bot in Planck.js' environment */
 class Robot {
 
@@ -17,16 +10,16 @@ class Robot {
     * @param {number} y
     * @param {number} id
     */
-    constructor(world, size, x, y, id) {
+    constructor(world, x, y, id) {
         this.world = world;
-        this.size = size;
+        this.size = this.world.sceneSize;
         this.x = x;
         this.y = y;
         this.id = id;
         this.canUpdateScore = true;
         this.bodyParts = {};
         this.joints = {};
-        this.createBody(size, x, y);
+        this.createBody(this.size, x, y);
         this.jointsKeys = Object.keys(this.joints);
         this.jointsLegKeys = [];
         this.jointsKeys.forEach((part) => {
