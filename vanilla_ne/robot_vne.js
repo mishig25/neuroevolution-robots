@@ -5,7 +5,6 @@ class RobotVNE extends Robot{
     * Takes in world, size, x, y, id
     * @constructor
     * @param {Planck.World} world
-    * @param {number} size
     * @param {number} x
     * @param {number} y
     * @param {number} id

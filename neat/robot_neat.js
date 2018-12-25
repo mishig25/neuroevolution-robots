@@ -2,10 +2,10 @@
 class RobotNeat extends Robot{
 
     /**
-    * Takes in world, size, x, y
+    * Takes in brain, world, x, y
     * @constructor
+    * @param {Neataptic.Network} brain
     * @param {Planck.World} world
-    * @param {number} size
     * @param {number} x
     * @param {number} y
     */

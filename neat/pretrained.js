@@ -1,3 +1,4 @@
+/** Pretrained architecture and weights */
 var pretrained_population = [
     {
         "nodes": [

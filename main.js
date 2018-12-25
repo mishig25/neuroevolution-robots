@@ -5,7 +5,7 @@ planck.testbed('Neuroevolution-bots', function (testbed) {
     const generationPeriod = 10000;
     updateUI('gperiod', parseInt(generationPeriod / 1000).toString() + ' seconds');
 
-    world.sceneSize = 1;
+    world.sceneSize = 2;
     const pt1 = Vec2(-70.0, -15.0);
     const pt2 = Vec2(70.0, -15.0);
     const pt3 = Vec2(pt1.x, pt1.y + world.sceneSize * 10);
@@ -16,13 +16,15 @@ planck.testbed('Neuroevolution-bots', function (testbed) {
     world.vtcl = { min: pt1.y, max: pt3.y };
     world.hztl = { min: pt1.x + world.sceneSize * 5, max: pt2.x - world.sceneSize * 5 };
 
+    const popSize = 30;
+    updateUI('popsize', popSize.toString());
     var generation;
     const algo = sessionStorage.getItem('algo');
     if (algo != 'vne'){
-        generation = new NEAT(world);
+        generation = new NEAT(world, popSize);
         for (var i = 0; i < 100; i++) generation.neat.mutate();
     }else{
-        generation = new Generation(world, 30);
+        generation = new Generation(world, popSize);
     };
 
     const pretrain = sessionStorage.getItem('pretrain');

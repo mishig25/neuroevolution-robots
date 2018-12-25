@@ -8,13 +8,17 @@ var Architect = neataptic.Architect;
 Config.warnings = false;
 
 // GA settings
-var BOT_AMOUNT = 30;
 var START_HIDDEN_SIZE = 0;
 var MUTATION_RATE = 0.05;
 var ELITISM_PERCENT = 0.1;
 
+/** NEAT class for running NEAT processes  */
 class NEAT{
-    constructor(world) {
+    /**
+     * Constructor
+     * @param {Planck.World} world 
+     */
+    constructor(world, pop_size) {
         this.world = world;
         this.bots = [];
         const len_input = 6;
@@ -37,9 +41,9 @@ class NEAT{
                     Methods.Mutation.ADD_BACK_CONN,
                     Methods.Mutation.SUB_BACK_CONN
                 ],
-                popsize: BOT_AMOUNT,
+                popsize: pop_size,
                 mutationRate: MUTATION_RATE,
-                elitism: Math.round(ELITISM_PERCENT * BOT_AMOUNT),
+                elitism: Math.round(ELITISM_PERCENT * pop_size),
                 network: new Architect.Random(
                     len_input,
                     START_HIDDEN_SIZE,
@@ -49,7 +53,9 @@ class NEAT{
         );
     };
 
-    /** Start the evaluation of the current generation */
+    /** 
+     * starts the evaluation of the current generation 
+    */
     initialize(pretrained) {
         // destroy all players
         this.bots.forEach((bot) => {
@@ -76,7 +82,9 @@ class NEAT{
         });
     };
 
-    /** End the evaluation of the current generation */
+    /** end the evaluation of the current generation 
+     * and continues the evolution
+    */
     evolve() {
         this.neat.sort();
 
@@ -102,6 +110,9 @@ class NEAT{
         this.initialize();
     };
 
+    /**
+     * Updates stats and UI
+     */
     updateStats(){
         updateUI("generation", parseInt(this.neat.generation + 1).toString());
         updateUI("score", this.neat.getAverage().toFixed(2).toString());

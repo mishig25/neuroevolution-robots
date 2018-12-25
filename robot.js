@@ -5,7 +5,6 @@ class Robot {
     * Takes in world, size, x, y, id
     * @constructor
     * @param {Planck.World} world
-    * @param {number} size
     * @param {number} x
     * @param {number} y
     * @param {number} id
@@ -116,7 +115,7 @@ class Robot {
      * @param {number} density 
      * @returns {Planck.DynamicBody}
      */
-    body_fixture(x, y, shp, density = 1.0) {
+    body_fixture(x, y, shp, density = 0.07) {
         const body_part = this.world.createDynamicBody(Vec2(x, y));
         body_part.createFixture(shp, density);
         body_part.m_fixtureList.m_filterGroupIndex = -1;

@@ -1,4 +1,4 @@
-/** Simple Neural Network library that can only create neural networks of exactly 3 layers */
+/** Simple Neural Network class that can only create neural networks of exactly 3 layers */
 class NeuralNetwork {
 
     /**
