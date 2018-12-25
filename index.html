@@ -85,21 +85,27 @@ body{
 </body>
 <script>
     function algoChange() {
-            const val = document.getElementById("algo").value;
-            sessionStorage.setItem('algo', val);
-            location.reload();
-    };
-    
-    function pretrainChange(){
-        const val = document.getElementById("pretrain").value;
-        sessionStorage.setItem('pretrain', val);
+        const val = document.getElementById("algo").value;
+        sessionStorage.setItem('algo', val);
         location.reload();
     };
+    
+    // function pretrainChange(){
+    //     const val = document.getElementById("pretrain").value;
+    //     sessionStorage.setItem('pretrain', val);
+    //     location.reload();
+    // };
 
     const algo = sessionStorage.getItem('algo');
     const pretrain = sessionStorage.getItem('pretrain');
+    console.log('PRETRAIN',pretrain)
     const d = document,
           h = d.getElementsByTagName('head')[0];
+    // if (pretrain == null || algo == 'no') {
+    //     document.getElementById("pretrain").selectedIndex = 0;
+    // } else {
+    //     document.getElementById("pretrain").selectedIndex = 1;
+    // };
     var scrpts;
     if (algo == null || algo == 'vne') {
         document.getElementById("algo").selectedIndex = 0;
@@ -117,11 +123,6 @@ body{
         s.src = src;
         h.appendChild(s);
     });
-    if (pretrain == null || algo == 'no'){
-        document.getElementById("pretrain").selectedIndex = 0;
-    }else{
-        document.getElementById("pretrain").selectedIndex = 1;
-    };
 </script>
 <script src="./main.js"></script>
 </html>

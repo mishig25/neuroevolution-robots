@@ -99,7 +99,7 @@ class RobotSne extends Robot{
         const y = (world.vtcl.max + world.vtcl.min) / 2;
         const hztl = world.hztl;
         const x = Math.round(Math.random() * (hztl.max - hztl.min)/7 + hztl.min);
-        let child = new RobotSne(world, 1, x, y, 0);
+        let child = new RobotSne(world, x, y, 0);
         let input_shape = parentABrain.input_weights.shape;
         let output_shape = parentABrain.output_weights.shape;
 
