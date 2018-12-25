@@ -18,15 +18,15 @@ planck.testbed('Neuroevolution-bots', function (testbed) {
 
     var generation;
     const algo = sessionStorage.getItem('algo');
-    if (algo == null || algo == 'vne'){
-        generation = new Generation(world, 30);
-    }else{
+    if (algo != 'vne'){
         generation = new NEAT(world);
         for (var i = 0; i < 100; i++) generation.neat.mutate();
+    }else{
+        generation = new Generation(world, 30);
     };
 
     const pretrain = sessionStorage.getItem('pretrain');
-    generation.initialize(pretrain == 'yes');
+    generation.initialize(pretrain != 'no');
 
     // Restart Generation every generationPeriod interval
     setInterval(() => {

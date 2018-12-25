@@ -34,8 +34,8 @@ body{
             <td>Algorithm:</td>
             <td>
                 <select id="algo" onchange="algoChange()">
-                    <option value="vne">Vanilla Neuroevolution</option>
                     <option value="neat">NEAT</option>
+                    <option value="vne">Vanilla Neuroevolution</option>
                 </select>
             </td>
         </tr>
@@ -43,8 +43,8 @@ body{
             <td>Training:</td>
             <td>
                 <select  id="pretrain" onchange="pretrainChange()">
-                    <option value="no">Start from Scratch</option>
                     <option value="yes">Load Pre-trained Weights</option>
+                    <option value="no">Start from Scratch</option>
                 </select>
             </td>
         </tr>
@@ -84,6 +84,9 @@ body{
     </ul>
 </body>
 <script>
+    const algo = sessionStorage.getItem('algo');
+    const pretrain = sessionStorage.getItem('pretrain');
+        
     function algoChange() {
         const val = document.getElementById("algo").value;
         sessionStorage.setItem('algo', val);
@@ -96,23 +99,20 @@ body{
         setTimeout(() => {location.reload()}, 200);
     };
 
-    const algo = sessionStorage.getItem('algo');
-    const pretrain = sessionStorage.getItem('pretrain');
-    console.log('PRETRAIN',pretrain)
     const d = document,
           h = d.getElementsByTagName('head')[0];
-    if (pretrain == null || pretrain == 'no') {
-        document.getElementById("pretrain").selectedIndex = 0;
-    } else {
+    if (pretrain == 'no') {
         document.getElementById("pretrain").selectedIndex = 1;
+    } else {
+        document.getElementById("pretrain").selectedIndex = 0;
     };
     var scrpts;
-    if (algo == null || algo == 'vne') {
-        document.getElementById("algo").selectedIndex = 0;
+    if (algo == 'vne') {
+        document.getElementById("algo").selectedIndex = 1;
         scrpts = ["./vanilla_ne/pretrained.js", "./vanilla_ne/nn.js", "./vanilla_ne/ga.js",
             "./vanilla_ne/robot_vne.js"];
     }else{
-        document.getElementById("algo").selectedIndex = 1;
+        document.getElementById("algo").selectedIndex = 0;
         scrpts = ["./neat/pretrained.js", "./neat/robot_neat.js", 
                 "./neat/neat.js"];
     }

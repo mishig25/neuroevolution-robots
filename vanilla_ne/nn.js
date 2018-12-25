@@ -20,7 +20,7 @@ class NeuralNetwork {
 
         // Load pre-trained
         const pretrain = sessionStorage.getItem('pretrain');
-        if (pretrain == 'yes'){
+        if (pretrain != 'no'){
             this.input_weights = tf.tensor(pre_w1, this.input_weights.shape);
             this.output_weights = tf.tensor(pre_w2, this.output_weights.shape);
         };
