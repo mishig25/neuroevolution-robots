@@ -19,15 +19,20 @@ body{
 <body>
     <h1><a id="NeuroevolutionBots_0"></a>Neuroevolution-Bots</h1>
     <p>Neuroevolution-Bots is a personal project that demonstrates <a href="https://en.wikipedia.org/wiki/Neuroevolution">neuroevolution</a>
-    in a browser environment using <a href="https://js.tensorflow.org/">TensorFlow.js</a> (for neural nets) and HTML5
-    Canvas (for graphics). I tried to create a scaled down 2D version of the popular <a href="https://gym.openai.com/envs/Humanoid-v2/">Gym’s
-        Humanoid-v2 environment</a> using <a href="http://piqnt.com/planck.js/">Planck.js</a>, a JavaScript rewrite of
-    Box2D.</p>
-    <p>The bots in the simulation have simple brains that consist of a 3-layer perceptron. Input to the perceptron: bot’s
-    head position in the world space and angles of bot’s every joint; output of the perceptron: angular impulse to
-    bot’s joints. After every iteration, a fitness function chooses the most fit bots to the next iteration (fitness
-    score of a bot: how much the bot traveled to the right + how many times and how much bot’s head was in upright
-    position).</p>
+        in a browser environment using <a href="https://js.tensorflow.org/">TensorFlow.js</a>, <a href="https://github.com/wagenaartje/neataptic">Neataptic</a>
+        (for neural nets) and HTML5 Canvas (for graphics). I tried to create a scaled down 2D version of the popular <a
+            href="https://gym.openai.com/envs/Humanoid-v2/">Gym’s Humanoid-v2 environment</a> using <a href="http://piqnt.com/planck.js/">Planck.js</a>,
+        a JavaScript rewrite of Box2D.</p>
+    <p>The bots in the simulation have simple brains (neural nets) that control their movements. Input to the brains: bot’s
+        head position in the world space and angles of bot’s leg and knee joints; output of the brains: rotation forces to
+        bot’s leg and knee joints. After every iteration, a fitness function chooses the most fit bots to the next
+        iteration (fitness score of bot: how much the bot traveled to the right + whether bot fell down or not).</p>
+    <p>Two variations of neuroevolution are available:</p>
+    <ul>
+        <li><a href="http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf">NEAT</a> (network architecture and weights
+            are updated)</li>
+        <li>Vanilla Neuroevolution (only network weights are updated)</li>
+    </ul>
     <p>Source code available: <a href="https://github.com/mishig25/neuroevolution-robots">here</a></p>
     <table>
         <tr>
@@ -78,6 +83,7 @@ body{
     <p>References and inspirations:</p>
     <ul>
         <li><a href="https://eng.uber.com/deep-neuroevolution/">Uber’s blogpost on Deep Neuroevolution</a></li>
+        <li><a href="http://www.evolvingai.org/robotics">Evolving AI Lab posts</a></li>
         <li><a href="https://github.com/openai/roboschool">Roboschool by OpenAI</a></li>
         <li><a href="https://github.com/adityathebe/evolutionSimulator">Evolution Simulator by Aditya Thebe</a></li>
         <li><a href="https://twitter.com/hardmaru/status/1007150247829594112?lang=en">Tweet by hardmaru</a></li>
