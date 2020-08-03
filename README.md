@@ -17,3 +17,6 @@ References and inspirations:
 * [Roboschool by OpenAI](https://github.com/openai/roboschool)
 * [Evolution Simulator by Aditya Thebe](https://github.com/adityathebe/evolutionSimulator)
 * [Tweet by hardmaru](https://twitter.com/hardmaru/status/1007150247829594112?lang=en)
+
+License:
+MIT
