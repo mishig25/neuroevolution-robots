@@ -6,8 +6,8 @@ Neuroevolution-Bots is a personal project that demonstrates [neuroevolution](htt
 The bots in the simulation have simple brains (neural nets) that control their movements. Input to the brains: bot's head position in the world space and angles of bot's leg and knee joints; output of the brains: rotation forces to bot's leg and knee joints. After every iteration, a fitness function chooses the most fit bots to the next iteration (fitness score of bot: how much the bot traveled to the right + whether bot fell down or not).
 
 Two variations of neuroevolution are available:
-* [NEAT](http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf) (network architecture and weights are updated)
-* Vanilla Neuroevolution (only network weights are updated)
+* [NEAT](http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf) (network architecture and weights are updated) (using [Neataptic.js](https://github.com/wagenaartje/neataptic))
+* Vanilla Neuroevolution (only network weights are updated) (using [Tensorflow.js](https://www.tensorflow.org/js))
 
 ## TRY THE DEMO: [here](https://mishig25.github.io/neuroevolution-robots/)
 
